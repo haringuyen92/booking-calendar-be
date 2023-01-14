@@ -1,82 +1,61 @@
 const errorResponse = require('../utils/errorResponse');
+const asyncHandler = require('../middleware/async');
 const User = require('../models/Users');
 
-exports.getUsers = async (req, res, next) => {
-    try {
-        const users = await User.find();
-        res.status(200).json({ 
-            success: true, 
-            message: "success getUsers",
-            users: users
-        });        
-    } catch (error) {
-        next(error);
-    }
-}
+exports.getUsers = asyncHandler(async (req, res, next) => {
+    const users = await User.find();
+    res.status(200).json({ 
+        success: true, 
+        message: "success getUsers",
+        users: users
+    }); 
+})
 
-exports.getUser = async (req, res, next) => {
+exports.getUser = asyncHandler(async (req, res, next) => {
     const userId = req.params.id;
-    try {
-        const user = await User.findById(userId);
-        if(!user) return next(new errorResponse(`user not found with ID: ${userId}`, 404))
-        res.status(200).json({
-            success: true, 
-            message: `success getUser ${userId}`,
-            user: user
-        });
-    } catch(error){
-        next(error);
-    }
-}
+    const user = await User.findById(userId);
+    if(!user) return next(new errorResponse(`user not found with ID: ${userId}`, 404))
+    res.status(200).json({
+        success: true, 
+        message: `success getUser ${userId}`,
+        user: user
+    });
+})
 
-exports.createUser = async (req, res, next) => {
-    try {
-        const user = await User.create(req.body);
-        res.status(200).json({ 
-            success: true, 
-            message: "success createUser createUser",
-            user: user
-        });
-    } catch(error) {
-        next(error);
-    }
-}
+exports.createUser = asyncHandler(async (req, res, next) => {
+    const user = await User.create(req.body);
+    res.status(200).json({ 
+        success: true, 
+        message: "success createUser createUser",
+        user: user
+    });
+})
 
-exports.updateUser = async (req, res, next) => {
+exports.updateUser = asyncHandler(async (req, res, next) => {
     const userId = req.params.id;
-    try {
-        const user = await User.findByIdAndUpdate(userId, req.body, {
-            new: true,
-            runValidators: true
-        });
+    const user = await User.findByIdAndUpdate(userId, req.body, {
+        new: true,
+        runValidators: true
+    });
 
-        if(!user) return next(new errorResponse(`user not found with ID: ${userId}`, 404))
+    if(!user) return next(new errorResponse(`user not found with ID: ${userId}`, 404))
 
-        res.status(200).json({ 
-            success: true, 
-            message: `success updateUser ${userId}`,
-            user: user
-        });    
-    } catch (error) {
-        next(error);
-    }
+    res.status(200).json({ 
+        success: true, 
+        message: `success updateUser ${userId}`,
+        user: user
+    });    
+})
+
+exports.deleteUser = asyncHandler(async (req, res, next) => {
+    const userId = req.params.id;
+    const user = await User.findByIdAndDelete(userId);
+
+    if(!user) return next(new errorResponse(`user not found with ID: ${userId}`, 404));
     
-}
-
-exports.deleteUser = async (req, res, next) => {
-    const userId = req.params.id;
-    try {
-        const user = await User.findByIdAndDelete(userId);
-
-        if(!user) return next(new errorResponse(`user not found with ID: ${userId}`, 404));
-        
-        res.status(200).json({ 
-            success: true, 
-            message: `success deleteUser ${userId}`,
-            user: user
-        });        
-    } catch (error) {
-        next(error);
-    }
-
-}
+    res.status(200).json({ 
+        success: true, 
+        message: `success deleteUser ${userId}`,
+        user: user
+    });    
+})
