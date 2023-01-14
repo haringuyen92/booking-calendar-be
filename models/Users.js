@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const Users = new mongoose.Schema({
     username: {
@@ -8,6 +9,7 @@ const Users = new mongoose.Schema({
         require: true
     },
     name: String,
+    slug: String,
     email: {
         type: String,
         unique: true,
@@ -18,5 +20,10 @@ const Users = new mongoose.Schema({
         default: Date.now
     }
 });
-
+Users.pre('save', function(next){
+    this.slug = slugify(this.name, {
+        lower: true
+    })
+    next();
+});
 module.exports = mongoose.model('User', Users);
