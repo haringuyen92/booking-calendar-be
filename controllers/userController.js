@@ -1,22 +1,90 @@
-exports.getUsers = (req, res, next) => {
-    res.status(200).json({ success: true, message: "success getUsers"});
+const User = require('../models/Users');
+
+exports.getUsers = async (req, res, next) => {
+    try {
+        const users = await User.find();
+        res.status(200).json({ 
+            success: true, 
+            message: "success getUsers",
+            users: users
+        });        
+    } catch (error) {
+        res.status(400).json({ 
+            success: false,
+            message: error.message
+         });
+    }
 }
 
-exports.getUser = (req, res, next) => {
+exports.getUser = async (req, res, next) => {
     const userId = req.params.id;
-    res.status(200).json({ success: true, message: `success getUser ${userId}`});
+    try {
+        const user = await User.findById(userId);
+        res.status(200).json({
+            success: true, 
+            message: `success getUser ${userId}`,
+            user: user
+        });
+    } catch(error){
+        res.status(400).json({ 
+            success: false, 
+            message: error.message,
+            user_id: userId
+        });
+    }
 }
 
-exports.createUser = (req, res, next) => {
-    res.status(200).json({ success: true, message: "success createUser createUser"});
+exports.createUser = async (req, res, next) => {
+    try {
+        const user = await User.create(req.body);
+        res.status(200).json({ 
+            success: true, 
+            message: "success createUser createUser",
+            user: user
+        });
+    } catch(error) {
+        res.status(400).json({ 
+            success: false, 
+            message: error.message
+        });
+    }
 }
 
-exports.updateUser = (req, res, next) => {
+exports.updateUser = async (req, res, next) => {
     const userId = req.params.id;
-    res.status(200).json({ success: true, message: `success updateUser ${userId}`});
+    try {
+        const user = await User.findByIdAndUpdate(userId, req.body, {
+            new: true,
+            runValidators: true
+        });
+        res.status(200).json({ 
+            success: true, 
+            message: `success updateUser ${userId}`,
+            user: user
+        });    
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error.message
+        })
+    }
+    
 }
 
-exports.deleteUser = (req, res, next) => {
+exports.deleteUser = async (req, res, next) => {
     const userId = req.params.id;
-    res.status(200).json({ success: true, message: `success deleteUser ${userId}`});
+    try {
+        const user = await User.findByIdAndDelete(userId);
+        res.status(200).json({ 
+            success: true, 
+            message: `success deleteUser ${userId}`,
+            user: user
+        });        
+    } catch (error) {
+        res.status(200).json({ 
+            success: false, 
+            message: error.message
+        });        
+    }
+
 }
