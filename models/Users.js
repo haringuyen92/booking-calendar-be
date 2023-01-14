@@ -4,11 +4,14 @@ const Users = new mongoose.Schema({
     username: {
         type: String,
         unique: true,
-        maxlength: 50
+        maxlength: 50,
+        require: true
     },
     name: String,
     email: {
         type: String,
+        unique: true,
+        require: true
     },
     createdAt: {
         type: Date,

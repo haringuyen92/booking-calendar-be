@@ -1,3 +1,4 @@
+const errorResponse = require('../utils/errorResponse');
 const User = require('../models/Users');
 
 exports.getUsers = async (req, res, next) => {
@@ -9,10 +10,7 @@ exports.getUsers = async (req, res, next) => {
             users: users
         });        
     } catch (error) {
-        res.status(400).json({ 
-            success: false,
-            message: error.message
-         });
+        next(error);
     }
 }
 
@@ -20,17 +18,14 @@ exports.getUser = async (req, res, next) => {
     const userId = req.params.id;
     try {
         const user = await User.findById(userId);
+        if(!user) return next(new errorResponse(`user not found with ID: ${userId}`, 404))
         res.status(200).json({
             success: true, 
             message: `success getUser ${userId}`,
             user: user
         });
     } catch(error){
-        res.status(400).json({ 
-            success: false, 
-            message: error.message,
-            user_id: userId
-        });
+        next(error);
     }
 }
 
@@ -43,10 +38,7 @@ exports.createUser = async (req, res, next) => {
             user: user
         });
     } catch(error) {
-        res.status(400).json({ 
-            success: false, 
-            message: error.message
-        });
+        next(error);
     }
 }
 
@@ -57,16 +49,16 @@ exports.updateUser = async (req, res, next) => {
             new: true,
             runValidators: true
         });
+
+        if(!user) return next(new errorResponse(`user not found with ID: ${userId}`, 404))
+
         res.status(200).json({ 
             success: true, 
             message: `success updateUser ${userId}`,
             user: user
         });    
     } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message
-        })
+        next(error);
     }
     
 }
@@ -75,16 +67,16 @@ exports.deleteUser = async (req, res, next) => {
     const userId = req.params.id;
     try {
         const user = await User.findByIdAndDelete(userId);
+
+        if(!user) return next(new errorResponse(`user not found with ID: ${userId}`, 404));
+        
         res.status(200).json({ 
             success: true, 
             message: `success deleteUser ${userId}`,
             user: user
         });        
     } catch (error) {
-        res.status(200).json({ 
-            success: false, 
-            message: error.message
-        });        
+        next(error);
     }
 
 }
