@@ -3,10 +3,43 @@ const asyncHandler = require('../middleware/async');
 const User = require('../models/Users');
 
 exports.getUsers = asyncHandler(async (req, res, next) => {
-    const users = await User.find();
+    const reqQuery = {...req.query};
+    const removeFields = ['select', 'sort'];
+    removeFields.forEach(q => delete reqQuery[q]);
+
+    let queryStr = JSON.stringify(reqQuery);
+
+
+    //create operators ($gt,...)
+    // queryStr = queryStr.replace(/\b(gt)\b/, m => `$${m}`);
+    let query = User.find(JSON.parse(queryStr));
+
+    //select fields ex: select=s1,s2,...
+    if(req.query.select){
+        const selectFields = req.query.select.split(',').join(' ');
+        query.select(selectFields);
+    }
+    //sort ex: ASC sort=s1,s2,s3,...  - DESC sort=-s1,-s2,-s3,...
+    if(req.query.sort){
+        const sortFields = req.query.sort.split(',').join(' ');
+        query.sort(sortFields);
+    }else{
+        query.sort('-createdAt');
+    }
+    const total = await User.countDocuments();
+    //pagination
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const skip = (page - 1)*limit;
+
+    query.skip(skip).limit(limit);
+
+    const users = await query;
     res.status(200).json({ 
         success: true, 
         message: "success getUsers",
+        total: total,
+        count: users.length,
         users: users
     }); 
 })
