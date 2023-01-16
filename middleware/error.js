@@ -3,6 +3,7 @@ const errorResponse = require("../utils/errorResponse");
 const errorHandler = (err, req, res, next) => {
     let error = {...err};
     let message = 'Server Error';
+    error.message = err.message;
 
     console.log(err.stack.red);
 

@@ -1,5 +1,6 @@
 const express = require('express');
-const userRoutes = require('./routes/usersRoutes');
+const userRoutes = require('./routes/userRoutes');
+const storeRoutes = require('./routes/storesRoutes');
 const dotenv = require('dotenv');
 // const logger = require('./middleware/logger');
 const morgan = require('morgan');
@@ -23,6 +24,8 @@ if(process.env.NODE_ENV === 'dev'){
 
 
 app.use('/api/users', userRoutes);
+app.use('/api/stores', storeRoutes);
+
 app.use(errorHandler);
 
 const server = app.listen(PORT, () => {
