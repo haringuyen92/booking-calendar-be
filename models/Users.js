@@ -19,11 +19,22 @@ const Users = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
+},{
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
+
 Users.pre('save', function(next){
     this.slug = slugify(this.name, {
         lower: true
     })
     next();
 });
+
+Users.virtual('stores', {
+    ref: 'Store',
+    localField: '_id',
+    foreignField: 'user',
+    justOne: false
+})
 module.exports = mongoose.model('Users', Users);
