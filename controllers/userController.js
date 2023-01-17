@@ -2,6 +2,10 @@ const errorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const User = require('../models/Users');
 
+// @desc   getAll 
+// @route  GET /api/users
+// @access Public
+
 exports.getUsers = asyncHandler(async (req, res, next) => {
     const reqQuery = {...req.query};
     const removeFields = ['select', 'sort'];
@@ -44,6 +48,11 @@ exports.getUsers = asyncHandler(async (req, res, next) => {
     }); 
 })
 
+// @desc   getOne 
+// @route  GET /api/users/:id
+// @access Public
+
+
 exports.getUser = asyncHandler(async (req, res, next) => {
     const userId = req.params.id;
     const user = await User.findById(userId);
@@ -55,6 +64,11 @@ exports.getUser = asyncHandler(async (req, res, next) => {
     });
 })
 
+// @desc   create 
+// @route  POST /api/users
+// @access Public
+
+
 exports.createUser = asyncHandler(async (req, res, next) => {
     const user = await User.create(req.body);
     res.status(200).json({ 
@@ -63,6 +77,11 @@ exports.createUser = asyncHandler(async (req, res, next) => {
         user: user
     });
 })
+
+// @desc   update 
+// @route  POST /api/users/:id
+// @access Public
+
 
 exports.updateUser = asyncHandler(async (req, res, next) => {
     const userId = req.params.id;
@@ -79,6 +98,11 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
         user: user
     });    
 })
+
+// @desc   delete 
+// @route  DELETE /api/users/:id
+// @access Public
+
 
 exports.deleteUser = asyncHandler(async (req, res, next) => {
     const userId = req.params.id;
