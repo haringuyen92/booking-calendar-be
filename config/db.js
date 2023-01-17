@@ -9,7 +9,7 @@ const connectDB = async () => {
         // useCreateIndex: true
     });
 
-    console.log(`connected mongoose  ${conn.connection.host}`);
+    console.log(`connected mongoose  ${conn.connection.host}`.cyan.underline.bold);
 }
 
 module.exports = connectDB;
