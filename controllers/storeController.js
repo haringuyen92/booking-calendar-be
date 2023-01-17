@@ -1,7 +1,7 @@
 const errorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
-const Users = require('../models/User');
-const Stores = require('../models/Store');
+const User = require('../models/User');
+const Store = require('../models/Store');
 
 
 // @desc   getAll
@@ -15,15 +15,12 @@ exports.getStores = asyncHandler( async(req, res, next) => {
     const removeFields = ['select', 'sort'];
     removeFields.forEach(q => delete reqQuery[q]);
 
-    let queryStr = JSON.stringify(reqQuery);
-
-
     //create operators ($gt,...)
     // queryStr = queryStr.replace(/\b(gt)\b/, m => `$${m}`);
     if(req.params.userId){
         reqQuery.user = req.params.userId;
     }
-    let query = Stores.find(reqQuery).populate('user');
+    let query = Store.find(reqQuery).populate('user');
 
 
     const stores = await query;
@@ -41,61 +38,76 @@ exports.getStores = asyncHandler( async(req, res, next) => {
 
 exports.getStore = asyncHandler( async(req, res, next) => {
     const storeId = req.params.id;
-    const store = await Stores.findById(storeId);
+    const store = await Store.findById(storeId).populate({
+        path: 'user'
+    });
+
+    if(!store) return next(new errorResponse(`Store not found id: ${storeId}`, 404));
 
     res.status(200).json({ 
         success: true, 
         message: `success getStore`,
-        store: store
+        data: store
     }); 
 })
 
 // @desc   create
-// @route  POST /api/stores
-// @access Public
+// @route  POST /api/users/:userId/store
+// @access Private
 
 exports.createStore = asyncHandler( async(req, res, next) => {
-    const store = await Stores.create(req.body);
+    const userId = req.params.userId;
+    const user = User.findById(userId);
+
+    if(!user) return next(new errorResponse(`User not found id: ${userId}`, 404));
+
+    req.body.user = userId;
+    const store = await Store.create(req.body);
     
     res.status(200).json({ 
         success: true, 
         message: `success createStore`,
-        store: store
+        data: store
     }); 
 })
 
 // @desc   update 
 // @route  PUT /api/stores/:id
-// @access Public
+// @access Private
 
 exports.updateStore = asyncHandler( async(req, res, next) => {
     const storeId = req.params.id;
+    let store = await Store.findById(storeId);
 
-    const store = await Stores.findByIdAndUpdate(storeId, req.body, {
+    if(!store) return next(new errorResponse(`Store not found id: ${storeId}`, 404));
+
+    store = await Store.findByIdAndUpdate(storeId, req.body, {
         new: true,
         runValidators: true
     });
-    if(!store) return next(new errorResponse(`cannot find Store with ID: ${storeId}`, 404));
 
     res.status(200).json({ 
         success: true, 
         message: `success updateStore ${storeId}`,
-        store: store
+        data: store
     }); 
 })
 
 // @desc   delete 
 // @route  DELETE /api/stores/:id
-// @access Public
+// @access Private
 
 exports.deleteStore = asyncHandler( async(req, res, next) => {
     const storeId = req.params.id;
-    const store = await Stores.findByIdAndDelete(storeId);
-    if(!store) return next(new errorResponse(`cannot find Store with ID: ${storeId}`, 404));
+    let store = await Store.findById(storeId);
+    
+    if(!store) return next(new errorResponse(`Store not found id: ${storeId}`, 404));
+
+    await Store.remove();
 
     res.status(200).json({ 
         success: true, 
         message: `success deleteStore ${storeId}`,
-        store: store
+        data: store
     }); 
 })
