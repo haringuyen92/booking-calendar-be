@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 
-const Users = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     username: {
         type: String,
         unique: true,
@@ -24,17 +24,17 @@ const Users = new mongoose.Schema({
     toObject: { virtuals: true }
 });
 
-Users.pre('save', function(next){
+UserSchema.pre('save', function(next){
     this.slug = slugify(this.name, {
         lower: true
     })
     next();
 });
 
-Users.virtual('stores', {
+UserSchema.virtual('stores', {
     ref: 'Store',
     localField: '_id',
     foreignField: 'user',
     justOne: false
 })
-module.exports = mongoose.model('Users', Users);
+module.exports = mongoose.model('User', UserSchema);
