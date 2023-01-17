@@ -1,6 +1,6 @@
 const express = require('express');
 const { getStores, getStore, createStore, updateStore, deleteStore } = require('../controllers/storeController');
-const storeRouter = express.Router();
+const storeRouter = express.Router({ mergeParams: true });
 
 storeRouter
     .route('/')

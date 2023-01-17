@@ -55,7 +55,7 @@ const StoreSchema = mongoose.Schema({
         zipcode: String,
         country: String
     },
-    userId: {
+    user: {
         type: mongoose.Types.ObjectId,
         ref: 'Users',
         require: [true, 'User invalid']
@@ -74,4 +74,4 @@ const StoreSchema = mongoose.Schema({
 //     next();
 // })
 
-module.exports = mongoose.model('Store', StoreSchema);
+module.exports = mongoose.model('Stores', StoreSchema);

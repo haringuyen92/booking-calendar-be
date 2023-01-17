@@ -1,6 +1,6 @@
 const errorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
-const User = require('../models/Users');
+const Users = require('../models/Users');
 
 // @desc   getAll 
 // @route  GET /api/users
@@ -15,8 +15,8 @@ exports.getUsers = asyncHandler(async (req, res, next) => {
 
 
     //create operators ($gt,...)
-    // queryStr = queryStr.replace(/\b(gt)\b/, m => `$${m}`);
-    let query = User.find(JSON.parse(queryStr));
+    // queryStr = queryStr.replace(/\b(lt|lte|gt|gte|ne)\b/, m => `$${m}`);
+    let query = Users.find(JSON.parse(queryStr));
 
     //select fields ex: select=s1,s2,...
     if(req.query.select){
@@ -30,7 +30,7 @@ exports.getUsers = asyncHandler(async (req, res, next) => {
     }else{
         query.sort('-createdAt');
     }
-    const total = await User.countDocuments();
+    const total = await Users.countDocuments();
     //pagination
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 10;
@@ -55,7 +55,7 @@ exports.getUsers = asyncHandler(async (req, res, next) => {
 
 exports.getUser = asyncHandler(async (req, res, next) => {
     const userId = req.params.id;
-    const user = await User.findById(userId);
+    const user = await Users.findById(userId);
     if(!user) return next(new errorResponse(`user not found with ID: ${userId}`, 404))
     res.status(200).json({
         success: true, 
@@ -70,7 +70,7 @@ exports.getUser = asyncHandler(async (req, res, next) => {
 
 
 exports.createUser = asyncHandler(async (req, res, next) => {
-    const user = await User.create(req.body);
+    const user = await Users.create(req.body);
     res.status(200).json({ 
         success: true, 
         message: "success createUser createUser",
@@ -85,7 +85,7 @@ exports.createUser = asyncHandler(async (req, res, next) => {
 
 exports.updateUser = asyncHandler(async (req, res, next) => {
     const userId = req.params.id;
-    const user = await User.findByIdAndUpdate(userId, req.body, {
+    const user = await Users.findByIdAndUpdate(userId, req.body, {
         new: true,
         runValidators: true
     });
@@ -106,7 +106,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
 
 exports.deleteUser = asyncHandler(async (req, res, next) => {
     const userId = req.params.id;
-    const user = await User.findByIdAndDelete(userId);
+    const user = await Users.findByIdAndDelete(userId);
 
     if(!user) return next(new errorResponse(`user not found with ID: ${userId}`, 404));
     

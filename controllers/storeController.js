@@ -1,6 +1,8 @@
 const errorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
-const Store = require('../models/Store');
+const Users = require('../models/Users');
+const Stores = require('../models/Stores');
+
 
 // @desc   getAll
 // @route  GET /api/stores
@@ -8,9 +10,6 @@ const Store = require('../models/Store');
 // @access Public
 
 exports.getStores = asyncHandler( async(req, res, next) => {
-    console.log(req.params.userId);
-    console.log("---------");
-    
     const reqQuery = {...req.query};
     
     const removeFields = ['select', 'sort'];
@@ -21,33 +20,16 @@ exports.getStores = asyncHandler( async(req, res, next) => {
 
     //create operators ($gt,...)
     // queryStr = queryStr.replace(/\b(gt)\b/, m => `$${m}`);
-    let query = Store.find(JSON.parse(queryStr));
-
-    //select fields ex: select=s1,s2,...
-    if(req.query.select){
-        const selectFields = req.query.select.split(',').join(' ');
-        query.select(selectFields);
+    if(req.params.userId){
+        reqQuery.user = req.params.userId;
     }
-    //sort ex: ASC sort=s1,s2,s3,...  - DESC sort=-s1,-s2,-s3,...
-    if(req.query.sort){
-        const sortFields = req.query.sort.split(',').join(' ');
-        query.sort(sortFields);
-    }else{
-        query.sort('-createdAt');
-    }
-    const total = await Store.countDocuments();
-    //pagination
-    const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 10;
-    const skip = (page - 1)*limit;
+    let query = Stores.find(reqQuery).populate('user');
 
-    query.skip(skip).limit(limit);
 
     const stores = await query;
     res.status(200).json({ 
         success: true, 
         message: "success getStores",
-        total: total,
         count: stores.length,
         data: stores
     }); 
@@ -59,7 +41,7 @@ exports.getStores = asyncHandler( async(req, res, next) => {
 
 exports.getStore = asyncHandler( async(req, res, next) => {
     const storeId = req.params.id;
-    const store = await Store.findById(storeId);
+    const store = await Stores.findById(storeId);
 
     res.status(200).json({ 
         success: true, 
@@ -73,7 +55,7 @@ exports.getStore = asyncHandler( async(req, res, next) => {
 // @access Public
 
 exports.createStore = asyncHandler( async(req, res, next) => {
-    const store = await Store.create(req.body);
+    const store = await Stores.create(req.body);
     
     res.status(200).json({ 
         success: true, 
@@ -89,7 +71,7 @@ exports.createStore = asyncHandler( async(req, res, next) => {
 exports.updateStore = asyncHandler( async(req, res, next) => {
     const storeId = req.params.id;
 
-    const store = await Store.findByIdAndUpdate(storeId, req.body, {
+    const store = await Stores.findByIdAndUpdate(storeId, req.body, {
         new: true,
         runValidators: true
     });
@@ -108,7 +90,7 @@ exports.updateStore = asyncHandler( async(req, res, next) => {
 
 exports.deleteStore = asyncHandler( async(req, res, next) => {
     const storeId = req.params.id;
-    const store = await Store.findByIdAndDelete(storeId);
+    const store = await Stores.findByIdAndDelete(storeId);
     if(!store) return next(new errorResponse(`cannot find Store with ID: ${storeId}`, 404));
 
     res.status(200).json({ 
