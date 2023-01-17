@@ -1,6 +1,6 @@
 const express = require('express');
-const userRoutes = require('./routes/userRoutes');
-const storeRoutes = require('./routes/storesRoutes');
+const userRoutes = require('./routes/users');
+const storeRoutes = require('./routes/stores');
 const dotenv = require('dotenv');
 // const logger = require('./middleware/logger');
 const morgan = require('morgan');

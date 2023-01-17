@@ -4,10 +4,15 @@ const Store = require('../models/Store');
 
 // @desc   getAll
 // @route  GET /api/stores
+// @route  GET /api/users/:userId/stores
 // @access Public
 
 exports.getStores = asyncHandler( async(req, res, next) => {
+    console.log(req.params.userId);
+    console.log("---------");
+    
     const reqQuery = {...req.query};
+    
     const removeFields = ['select', 'sort'];
     removeFields.forEach(q => delete reqQuery[q]);
 
