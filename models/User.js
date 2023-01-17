@@ -24,12 +24,18 @@ const UserSchema = new mongoose.Schema({
     toObject: { virtuals: true }
 });
 
-UserSchema.pre('save', function(next){
+UserSchema.pre('save', async function(next){
     this.slug = slugify(this.name, {
         lower: true
-    })
+    });
     next();
 });
+
+UserSchema.pre('remove', async function(next){
+    console.log(`Remove Store from User: ${this._id}`);
+    await this.model('Store').deleteMany({ user: this._id });
+    next();
+})
 
 UserSchema.virtual('stores', {
     ref: 'Store',

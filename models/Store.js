@@ -57,7 +57,7 @@ const StoreSchema = mongoose.Schema({
     },
     user: {
         type: mongoose.Types.ObjectId,
-        ref: 'Users',
+        ref: 'User',
         require: [true, 'User invalid']
     },
     createdAt: {

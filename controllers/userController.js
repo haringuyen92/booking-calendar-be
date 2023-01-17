@@ -38,7 +38,7 @@ exports.getUsers = asyncHandler(async (req, res, next) => {
 
     query.skip(skip).limit(limit);
 
-    const users = await query;
+    const users = await query.populate('stores');
     res.status(200).json({ 
         success: true, 
         message: "success getUsers",
@@ -55,7 +55,7 @@ exports.getUsers = asyncHandler(async (req, res, next) => {
 
 exports.getUser = asyncHandler(async (req, res, next) => {
     const userId = req.params.id;
-    const user = await Users.findById(userId);
+    const user = await Users.findById(userId).populate('stores');
     if(!user) return next(new errorResponse(`user not found with ID: ${userId}`, 404))
     res.status(200).json({
         success: true, 
@@ -106,9 +106,10 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
 
 exports.deleteUser = asyncHandler(async (req, res, next) => {
     const userId = req.params.id;
-    const user = await Users.findByIdAndDelete(userId);
+    const user = await Users.findById(userId);
 
     if(!user) return next(new errorResponse(`user not found with ID: ${userId}`, 404));
+    user.remove();
     
     res.status(200).json({ 
         success: true, 
