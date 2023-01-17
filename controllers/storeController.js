@@ -2,6 +2,10 @@ const errorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const Store = require('../models/Store');
 
+// @desc   getAll
+// @route  GET /api/stores
+// @access Public
+
 exports.getStores = asyncHandler( async(req, res, next) => {
     const reqQuery = {...req.query};
     const removeFields = ['select', 'sort'];
@@ -40,9 +44,13 @@ exports.getStores = asyncHandler( async(req, res, next) => {
         message: "success getStores",
         total: total,
         count: stores.length,
-        users: stores
+        data: stores
     }); 
 })
+
+// @desc   getOne
+// @route  GET /api/stores/:id
+// @access Public
 
 exports.getStore = asyncHandler( async(req, res, next) => {
     const storeId = req.params.id;
@@ -55,6 +63,10 @@ exports.getStore = asyncHandler( async(req, res, next) => {
     }); 
 })
 
+// @desc   create
+// @route  POST /api/stores
+// @access Public
+
 exports.createStore = asyncHandler( async(req, res, next) => {
     const store = await Store.create(req.body);
     
@@ -64,6 +76,10 @@ exports.createStore = asyncHandler( async(req, res, next) => {
         store: store
     }); 
 })
+
+// @desc   update 
+// @route  PUT /api/stores/:id
+// @access Public
 
 exports.updateStore = asyncHandler( async(req, res, next) => {
     const storeId = req.params.id;
@@ -80,6 +96,10 @@ exports.updateStore = asyncHandler( async(req, res, next) => {
         store: store
     }); 
 })
+
+// @desc   delete 
+// @route  DELETE /api/stores/:id
+// @access Public
 
 exports.deleteStore = asyncHandler( async(req, res, next) => {
     const storeId = req.params.id;
