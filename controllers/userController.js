@@ -66,7 +66,7 @@ exports.getUser = asyncHandler(async (req, res, next) => {
 
 // @desc   create 
 // @route  POST /api/users
-// @access Public
+// @access private
 
 
 exports.createUser = asyncHandler(async (req, res, next) => {
@@ -80,7 +80,7 @@ exports.createUser = asyncHandler(async (req, res, next) => {
 
 // @desc   update 
 // @route  POST /api/users/:id
-// @access Public
+// @access private
 
 
 exports.updateUser = asyncHandler(async (req, res, next) => {
@@ -101,7 +101,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
 
 // @desc   delete 
 // @route  DELETE /api/users/:id
-// @access Public
+// @access private
 
 
 exports.deleteUser = asyncHandler(async (req, res, next) => {
