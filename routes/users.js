@@ -3,18 +3,19 @@ const { getUsers, getUser, createUser, updateUser, deleteUser } = require('../co
 
 const userRouter = express.Router();
 const courseRouter = require('./stores');
+const { protect } = require('../middleware/auth');
 
 userRouter.use('/:userId/stores', courseRouter);
 
 userRouter
     .route('/')
     .get(getUsers)
-    .post(createUser);
+    .post(protect, createUser);
     
 userRouter
     .route('/:id')
     .get(getUser)
-    .put(updateUser)
-    .delete(deleteUser);
+    .put(protect, updateUser)
+    .delete(protect, deleteUser);
 
 module.exports = userRouter;

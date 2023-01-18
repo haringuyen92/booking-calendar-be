@@ -5,7 +5,7 @@ const StoreSchema = mongoose.Schema({
     name: {
         type: String,
         trim: true,
-        require: [true, 'Vua long nhap mo ta'],
+        required: [true, 'name is required'],
         maxlength: [30, 'Chi chap nhan do dai toi da 30']
     },
     image: {
@@ -14,7 +14,7 @@ const StoreSchema = mongoose.Schema({
     },
     description: {
         type: String,
-        required: [true, 'Vua long nhap mo ta'],
+        required: [true, 'description is required'],
         maxlength: [500, 'Chi chap nhan do dai toi da 500']
     },
     website: {
@@ -37,7 +37,7 @@ const StoreSchema = mongoose.Schema({
     },
     address: {
         type: String,
-        require: [true, 'Vui long nhap dia chi']
+        required: [true, 'Vui long nhap dia chi']
     },
     location: {
         type: {
@@ -58,7 +58,7 @@ const StoreSchema = mongoose.Schema({
     user: {
         type: mongoose.Types.ObjectId,
         ref: 'User',
-        require: [true, 'User invalid']
+        required: [true, 'User invalid']
     },
     createdAt: {
         type: Date,

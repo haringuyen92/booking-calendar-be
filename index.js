@@ -1,10 +1,12 @@
 const express = require('express');
-const userRoutes = require('./routes/users');
-const storeRoutes = require('./routes/stores');
+const authRouter = require('./routes/auth');
+const userRouter = require('./routes/users');
+const storeRouter = require('./routes/stores');
 const dotenv = require('dotenv');
 // const logger = require('./middleware/logger');
 const morgan = require('morgan');
 const colors = require('colors');
+const cookieParser = require('cookie-parser');
 const errorHandler = require('./middleware/error');
 const connectDB = require('./config/db');
 
@@ -17,14 +19,16 @@ const PORT = process.env.PORT || 3000;
 connectDB();
 
 app.use(express.json());
+app.use(cookieParser());
+
 
 if(process.env.NODE_ENV === 'dev'){
     app.use(morgan('dev'));
 }
 
-
-app.use('/api/users', userRoutes);
-app.use('/api/stores', storeRoutes);
+app.use('/api/auth', authRouter);
+app.use('/api/users', userRouter);
+app.use('/api/stores', storeRouter);
 
 app.use(errorHandler);
 

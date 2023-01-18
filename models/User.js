@@ -1,20 +1,34 @@
 const mongoose = require('mongoose');
-const slugify = require('slugify');
+const bcryptjs = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const UserSchema = new mongoose.Schema({
-    username: {
+    name: {
         type: String,
-        unique: true,
-        maxlength: 50,
-        require: true
+        required: [true, 'name is require']
     },
-    name: String,
-    slug: String,
     email: {
         type: String,
         unique: true,
-        require: true
+        required: [true, 'email is require'],
+        match: [
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+            'email invalid'
+        ]
     },
+    role: {
+        type: String,
+        enum: ['user', 'publisher'],
+        default: 'user'
+    },
+    password: {
+        type: String,
+        required: [true, 'password is require'],
+        minlength: 6,
+        select: false
+    },
+    resetPasswordToken: String,
+    resetPasswordTExpire: Date,
     createdAt: {
         type: Date,
         default: Date.now
@@ -25,9 +39,8 @@ const UserSchema = new mongoose.Schema({
 });
 
 UserSchema.pre('save', async function(next){
-    this.slug = slugify(this.name, {
-        lower: true
-    });
+    const salt = await bcryptjs.genSalt(10);
+    this.password = await bcryptjs.hash(this.password, salt);
     next();
 });
 
@@ -36,6 +49,16 @@ UserSchema.pre('remove', async function(next){
     await this.model('Store').deleteMany({ user: this._id });
     next();
 })
+
+UserSchema.methods.getSignedJwtToken = function() {
+    return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRE
+    });
+}
+
+UserSchema.methods.matchPassword = async function(password) {
+    return await bcryptjs.compare(password, this.password);
+}
 
 UserSchema.virtual('stores', {
     ref: 'Store',
