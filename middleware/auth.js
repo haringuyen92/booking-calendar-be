@@ -13,11 +13,20 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);        
-        const user = User.findById(decoded.id);
+        const user = await User.findById(decoded.id);
         if(!user) return next(new errorResponse(`verify token is failed!`, 401));
         req.user = user;
     } catch (error) {
         return next(new errorResponse(`Token invalid`, 404));
     }
     next();
-})
+});
+
+exports.authorize = (...roles) => {
+    return (req, res, next) => {
+        if(!roles.includes(req.user.roles)){
+            return next(new errorResponse(`User role ${req.user.role} is not authorized to access this route`, 401));
+        }
+        next();
+    };
+}

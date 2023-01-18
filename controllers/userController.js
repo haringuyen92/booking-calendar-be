@@ -4,19 +4,16 @@ const Users = require('../models/User');
 
 // @desc   getAll 
 // @route  GET /api/users
-// @access Public
+// @access Private
 
 exports.getUsers = asyncHandler(async (req, res, next) => {
     const reqQuery = {...req.query};
     const removeFields = ['select', 'sort'];
     removeFields.forEach(q => delete reqQuery[q]);
 
-    let queryStr = JSON.stringify(reqQuery);
-
-
     //create operators ($gt,...)
     // queryStr = queryStr.replace(/\b(lt|lte|gt|gte|ne)\b/, m => `$${m}`);
-    let query = Users.find(JSON.parse(queryStr));
+    let query = Users.find(reqQuery);
 
     //select fields ex: select=s1,s2,...
     if(req.query.select){
@@ -50,7 +47,7 @@ exports.getUsers = asyncHandler(async (req, res, next) => {
 
 // @desc   getOne 
 // @route  GET /api/users/:id
-// @access Public
+// @access Private
 
 
 exports.getUser = asyncHandler(async (req, res, next) => {
