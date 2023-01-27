@@ -32,6 +32,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 app.use('/api/stores', storeRouter);
 
+
 app.use(errorHandler);
 
 const server = app.listen(PORT, () => {
