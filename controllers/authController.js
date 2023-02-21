@@ -48,11 +48,11 @@ const sendTokenResponse = (user, res) => {
         .status(200)
         .json({
             success: true,
-            token: token,
             user: {
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                token: token,
             }
         })
 }
