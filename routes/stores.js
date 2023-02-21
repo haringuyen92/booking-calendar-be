@@ -6,12 +6,12 @@ const { protect, authorize } = require('../middleware/auth');
 storeRouter
     .route('/')
     .get(getStores)
-    .post(protect, authorize('store'), createStore);
+    .post(protect, authorize('store', 'admin'), createStore);
     
 storeRouter
     .route('/:id')
     .get(getStore)
-    .put(protect, authorize('store'), updateStore)
-    .delete(protect, authorize('store'), deleteStore);
+    .put(protect, authorize('store', 'admin'), updateStore)
+    .delete(protect, authorize('store', 'admin'), deleteStore);
 
 module.exports = storeRouter;

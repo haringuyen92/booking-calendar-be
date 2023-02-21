@@ -38,15 +38,21 @@ const sendTokenResponse = (user, res) => {
 
     const options = {
         expires: new Date(Date.now() + process.env.COOKIE_TOKEN_EXPIRE*24*3600*1000),
-        httpOnly: true
+        httpOnly: true,
     }
     if(process.env.NODE_ENV == 'production'){
         options.secure = true;
     }
-    res.status(200)
-        .cookie('token', token, options)
+
+    res.cookie('token', token, options)
+        .status(200)
         .json({
             success: true,
-            token: token
+            token: token,
+            user: {
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            }
         })
 }

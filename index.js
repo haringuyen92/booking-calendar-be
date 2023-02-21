@@ -14,6 +14,12 @@ const connectDB = require('./config/db');
 dotenv.config({
     path: './config/config.env'
 });
+const corsOptions = {
+    origin: [
+        "http://localhost:8080"
+    ],
+    credentials: true,
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,7 +27,7 @@ connectDB();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(cors(corsOptions));
 
 
 if(process.env.NODE_ENV === 'dev'){
