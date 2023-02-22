@@ -2,10 +2,10 @@ const express = require('express');
 const { getUsers, getUser, createUser, updateUser, deleteUser } = require('../controllers/userController');
 
 const userRouter = express.Router();
-const courseRouter = require('./stores');
+const storeRouter = require('./stores');
 const { protect, authorize } = require('../middleware/auth');
 
-userRouter.use('/:userId/stores', courseRouter);
+userRouter.use('/:userId/stores', storeRouter);
 
 userRouter
     .route('/')
