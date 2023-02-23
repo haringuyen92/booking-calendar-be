@@ -5,7 +5,7 @@ const { protect, authorize } = require('../middleware/auth');
 
 storeRouter
     .route('/')
-    .get(getStores)
+    .get(protect, getStores)
     .post(protect, authorize('store', 'admin'), createStore);
     
 storeRouter

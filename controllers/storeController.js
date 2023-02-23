@@ -17,7 +17,7 @@ exports.getStores = asyncHandler( async(req, res, next) => {
 
     //create operators ($gt,...)
     // queryStr = queryStr.replace(/\b(gt)\b/, m => `$${m}`);
-    if(req.params.userId){
+    if(req.params.userId && req.user.role === 'store'){
         reqQuery.user = req.params.userId;
     }
     let query = Store.find(reqQuery).populate('user');
@@ -103,7 +103,7 @@ exports.deleteStore = asyncHandler( async(req, res, next) => {
     
     if(!store) return next(new errorResponse(`Store not found id: ${storeId}`, 404));
 
-    await Store.remove();
+    await store.remove();
 
     res.status(200).json({ 
         success: true, 

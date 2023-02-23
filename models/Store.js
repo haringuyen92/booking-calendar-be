@@ -5,8 +5,8 @@ const StoreSchema = mongoose.Schema({
     name: {
         type: String,
         trim: true,
-        required: [true, 'name is required'],
-        maxlength: [30, 'Chi chap nhan do dai toi da 30']
+        required: [true, 'Name is required'],
+        maxlength: [30, 'Name is more than 30 characters!']
     },
     image: {
         type: String,
@@ -14,30 +14,30 @@ const StoreSchema = mongoose.Schema({
     },
     description: {
         type: String,
-        required: [true, 'description is required'],
-        maxlength: [500, 'Chi chap nhan do dai toi da 500']
+        required: [true, 'Description is required'],
+        maxlength: [500, 'Description is more than 500 characters!']
     },
     website: {
         type: String,
         match: [
             /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
-            'Dia chi website khong dung dinh dang'
+            'Website invalid!'
         ]
     },
     phone: {
         type: String,
-        maxlength: [20, 'Chi chap nhan do dai toi da 20']
+        maxlength: [20, 'Phone is more than 20 characters!']
     },
     email: {
         type: String,
         match: [
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-            'Dia chi email khong dung dinh dang'
+            'Email invalid!'
         ]
     },
     address: {
         type: String,
-        required: [true, 'Vui long nhap dia chi']
+        required: [true, 'Address is required!']
     },
     location: {
         type: {
@@ -58,7 +58,7 @@ const StoreSchema = mongoose.Schema({
     user: {
         type: mongoose.Types.ObjectId,
         ref: 'User',
-        required: [true, 'User invalid']
+        required: [true, 'User invalid!']
     },
     createdAt: {
         type: Date,
@@ -73,5 +73,12 @@ const StoreSchema = mongoose.Schema({
 //         });
 //     next();
 // })
+StoreSchema.set('toJSON', {
+    transform: function (doc, ret) {
+      ret.id = ret._id;
+      delete ret._id;
+      delete ret.__v;
+    }
+  });
 
 module.exports = mongoose.model('Store', StoreSchema);
