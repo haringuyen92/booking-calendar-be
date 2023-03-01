@@ -10,7 +10,7 @@ const Staff = mongoose.Schema({
         type: Number,
         default: 10
     },
-    maxBookingSlot: {
+    maxBookingTheSameTime: {
         type: Number,
         default: 0
     },
