@@ -1,8 +1,10 @@
 const express = require('express');
 const { getStores, getStore, createStore, updateStore, deleteStore } = require('../controllers/storeController');
 const storeRouter = express.Router({ mergeParams: true });
+const staffRouter = require('./staff');
 const { protect, authorize } = require('../middleware/auth');
 
+storeRouter.use('/:storeId/staffs', staffRouter);
 storeRouter
     .route('/')
     .get(protect, getStores)

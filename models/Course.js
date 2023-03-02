@@ -29,7 +29,7 @@ const Staff = mongoose.Schema({
         type: Number,
         default: 5
     },
-    isApply: {
+    active: {
         type: Boolean,
         default: false
     },
