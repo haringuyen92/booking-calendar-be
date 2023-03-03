@@ -57,7 +57,7 @@ exports.updateStaff = asyncHandler( async(req, res, next) => {
     let staff = await StaffService.get(id);
     if(!staff) return next(new errorResponse(`Staff not found id: ${id}`, 404));
 
-    staff = await Store.findByIdAndUpdate(storeId, req.body, {
+    staff = await Staff.findByIdAndUpdate(id, req.body, {
         new: true,
         runValidators: true
     });
