@@ -41,6 +41,10 @@ const Staff = mongoose.Schema({
         type: Number,
         default: 1
     },
+    isAllCourse: {
+        type: Boolean,
+        default: true
+    },
     createdAt: {
         type: Date,
         default: Date.now
