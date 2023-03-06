@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const Staff = mongoose.Schema({
+const Course = mongoose.Schema({
     store: {
         type: mongoose.Types.ObjectId,
         ref: 'Store',
@@ -47,4 +47,4 @@ const Staff = mongoose.Schema({
     },
 })
 
-module.exports = mongoose.model('Staff', Staff);
+module.exports = mongoose.model('Course', Course);
