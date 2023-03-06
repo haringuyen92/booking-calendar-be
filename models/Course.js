@@ -6,6 +6,12 @@ const Course = mongoose.Schema({
         ref: 'Store',
         required: [true, 'Store invalid!']
     },
+    staffs: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: 'Staff'
+        }
+    ],
     name: {
         type: String,
         trim: true,
