@@ -1,17 +1,16 @@
 const asyncHandler = require('../middleware/async');
-const Course = require('../models/Course');
 const errorResponse = require("../utils/errorResponse");
-const CourseService = require("../services/CourseServices");
-const StoreService = require("../services/StoreServices");
+const CourseService = require("../services/courseServices");
+const StoreService = require("../services/storeServices");
 
 exports.getCourses = asyncHandler( async(req, res, next) => {
     const storeId = req.params.storeId;
-    const store = await StoreService.get(storeId);
+    const store = await StoreService.getOne(storeId);
     if(!store) return next(new errorResponse(`Store not found id: ${storeId}`, 404));
 
-    const courses = await Course.find({
+    const courses = await CourseService.getBy({
         store: storeId
-    }).populate('store');
+    });
     return res.status(200).json({
         success: true,
         message: "success getCourses",
@@ -22,10 +21,10 @@ exports.getCourses = asyncHandler( async(req, res, next) => {
 
 exports.getCourse = asyncHandler( async(req, res, next) => {
     const { storeId, id } = req.params;
-    const store = await StoreService.get(storeId);
+    const store = await StoreService.getOne(storeId);
     if(!store) return next(new errorResponse(`Store not found id: ${storeId}`, 404));
 
-    const course = await Course.findById(id).populate('store');
+    const course = await CourseService.getOne(id);
     return res.status(200).json({
         success: true,
         message: "success getCourse",
@@ -35,12 +34,12 @@ exports.getCourse = asyncHandler( async(req, res, next) => {
 
 exports.createCourse = asyncHandler( async(req, res, next) => {
     const storeId = req.params.storeId;
-    const store = await StoreService.get(storeId);
+    const store = await StoreService.getOne(storeId);
 
     if(!store) return next(new errorResponse(`Store not found id: ${storeId}`, 404));
 
     req.body.store = storeId;
-    const course = await Course.create(req.body);
+    const course = await CourseService.create(req.body);
     return res.status(200).json({
         success: true,
         message: "success createCourse",
@@ -50,16 +49,13 @@ exports.createCourse = asyncHandler( async(req, res, next) => {
 
 exports.updateCourse = asyncHandler( async(req, res, next) => {
     const { storeId, id } = req.params;
-    const store = await StoreService.get(storeId);
+    const store = await StoreService.getOne(storeId);
     if(!store) return next(new errorResponse(`Store not found id: ${storeId}`, 404));
 
-    let course = await CourseService.get(id);
-    if(!Course) return next(new errorResponse(`Course not found id: ${id}`, 404));
+    let course = await CourseService.getOne(id);
+    if(!course) return next(new errorResponse(`Course not found id: ${id}`, 404));
 
-    course = await Course.findByIdAndUpdate(id, req.body, {
-        new: true,
-        runValidators: true
-    });
+    course = await CourseService.update(id, req.body);
     return res.status(200).json({
         success: true,
         message: "success updateCourse",
@@ -69,7 +65,7 @@ exports.updateCourse = asyncHandler( async(req, res, next) => {
 
 exports.deleteCourse = asyncHandler( async(req, res, next) => {
     const { storeId, id } = req.params;
-    const store = await StoreService.get(storeId);
+    const store = await StoreService.getOne(storeId);
     if(!store) return next(new errorResponse(`Store not found id: ${storeId}`, 404));
 
     const course = await CourseService.delete(id);

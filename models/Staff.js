@@ -51,10 +51,12 @@ const Staff = mongoose.Schema({
         type: Boolean,
         default: true
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
+    isDeleted: {
+        type: Boolean,
+        default: false
     },
+}, {
+    timestamps: true
 })
 
 module.exports = mongoose.model('Staff', Staff);

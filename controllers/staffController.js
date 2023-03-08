@@ -1,18 +1,16 @@
 const asyncHandler = require('../middleware/async');
-const Staff = require('../models/Staff');
-const Store = require('../models/Store');
 const errorResponse = require("../utils/errorResponse");
-const StaffService = require("../services/StaffServices");
-const StoreService = require("../services/StoreServices");
+const StaffService = require("../services/staffServices");
+const StoreService = require("../services/storeServices");
 
 exports.getStaffs = asyncHandler( async(req, res, next) => {
     const storeId = req.params.storeId;
-    const store = await StoreService.get(storeId);
+    const store = await StoreService.getOne(storeId);
     if(!store) return next(new errorResponse(`Store not found id: ${storeId}`, 404));
 
-    const staffs = await Staff.find({
+    const staffs = await StaffService.getBy({
         store: storeId
-    }).populate('store');
+    });
     return res.status(200).json({
         success: true, 
         message: "success getStaffs",
@@ -23,10 +21,10 @@ exports.getStaffs = asyncHandler( async(req, res, next) => {
 
 exports.getStaff = asyncHandler( async(req, res, next) => {
     const { storeId, id } = req.params;
-    const store = await StoreService.get(storeId);
+    const store = await StoreService.getOne(storeId);
     if(!store) return next(new errorResponse(`Store not found id: ${storeId}`, 404));
 
-    const staff = await Staff.findById(id).populate('store');
+    const staff = await StaffService.getOne(id);
     return res.status(200).json({
         success: true, 
         message: "success getStaff",
@@ -36,12 +34,12 @@ exports.getStaff = asyncHandler( async(req, res, next) => {
 
 exports.createStaff = asyncHandler( async(req, res, next) => {
     const storeId = req.params.storeId;
-    const store = await StoreService.get(storeId);
+    const store = await StoreService.getOne(storeId);
     
     if(!store) return next(new errorResponse(`Store not found id: ${storeId}`, 404));
 
     req.body.store = storeId;
-    const staff = await Staff.create(req.body);
+    const staff = await StaffService.create(req.body);
     return res.status(200).json({
         success: true,
         message: "success createStaff",
@@ -51,16 +49,15 @@ exports.createStaff = asyncHandler( async(req, res, next) => {
 
 exports.updateStaff = asyncHandler( async(req, res, next) => {
     const { storeId, id } = req.params;
-    const store = await StoreService.get(storeId);
+    const store = await StoreService.getOne(storeId);
     if(!store) return next(new errorResponse(`Store not found id: ${storeId}`, 404));
     
-    let staff = await StaffService.get(id);
-    if(!staff) return next(new errorResponse(`Staff not found id: ${id}`, 404));
+    const currentStaff = await StaffService.getOne(id);
+    if(!currentStaff) return next(new errorResponse(`Staff not found id: ${id}`, 404));
+    const { isAllCourse } = req.body;
+    if(isAllCourse) req.body.courses = [];
 
-    staff = await Staff.findByIdAndUpdate(id, req.body, {
-        new: true,
-        runValidators: true
-    });
+    const staff = await StaffService.update(id, req.body);
     return res.status(200).json({
         success: true,
         message: "success updateStaff",
@@ -70,7 +67,7 @@ exports.updateStaff = asyncHandler( async(req, res, next) => {
 
 exports.deleteStaff = asyncHandler( async(req, res, next) => {
     const { storeId, id } = req.params;
-    const store = await StoreService.get(storeId);
+    const store = await StoreService.getOne(storeId);
     if(!store) return next(new errorResponse(`Store not found id: ${storeId}`, 404));
 
     const staff = await StaffService.delete(id);

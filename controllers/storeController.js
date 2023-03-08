@@ -1,7 +1,8 @@
 const errorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
-const User = require('../models/User');
 const Store = require('../models/Store');
+const UserService = require("../services/userServices");
+const StoreService = require("../services/storeServices");
 
 
 // @desc   getAll
@@ -20,10 +21,7 @@ exports.getStores = asyncHandler( async(req, res, next) => {
     if(req.params.userId && req.user.role === 'store'){
         reqQuery.user = req.params.userId;
     }
-    let query = Store.find(reqQuery).populate('user');
-
-
-    const stores = await query;
+    const stores = await Store.find(reqQuery).populate('user');
     res.status(200).json({ 
         success: true, 
         message: "success getStores",
@@ -57,12 +55,12 @@ exports.getStore = asyncHandler( async(req, res, next) => {
 
 exports.createStore = asyncHandler( async(req, res, next) => {
     const userId = req.params.userId;
-    const user = User.findById(userId);
+    const user = UserService.getOne(userId);
 
     if(!user) return next(new errorResponse(`User not found id: ${userId}`, 404));
 
     req.body.user = userId;
-    const store = await Store.create(req.body);
+    const store = await StoreService.create(req.body);
     
     res.status(200).json({ 
         success: true, 
@@ -81,10 +79,7 @@ exports.updateStore = asyncHandler( async(req, res, next) => {
 
     if(!store) return next(new errorResponse(`Store not found id: ${storeId}`, 404));
 
-    store = await Store.findByIdAndUpdate(storeId, req.body, {
-        new: true,
-        runValidators: true
-    });
+    store = await StoreService.update(storeId, req.body);
 
     res.status(200).json({ 
         success: true, 

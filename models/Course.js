@@ -47,10 +47,12 @@ const Course = mongoose.Schema({
         type: Number,
         default: 1
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
+    isDeleted: {
+        type: Boolean,
+        default: false
     },
+}, {
+    timestamps: true
 })
 
 module.exports = mongoose.model('Course', Course);
