@@ -7,16 +7,16 @@ const SettingSlot = mongoose.Schema({
         required: [true, 'Store invalid!']
     },
     isRequiredStaff: {
-        type: Boolean,
-        default: false
+        type: String,
+        default: 'optional' //not_used, required, optional
     },
     isUseCostStaff: {
         type: Boolean,
         default: false
     },
     isRequiredCourse: {
-        type: Boolean,
-        default: false
+        type: String,
+        default: 'optional' //not_used, required, optional
     },
     isUseCostCourse: {
         type: Boolean,
