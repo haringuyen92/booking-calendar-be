@@ -60,10 +60,8 @@ const StoreSchema = mongoose.Schema({
         ref: 'User',
         required: [true, 'User invalid!']
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
+}, {
+    timestamps: true
 })
 
 // StoreSchema.pre('save', async function(next) {
