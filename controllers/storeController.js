@@ -18,8 +18,9 @@ exports.getStores = asyncHandler( async(req, res, next) => {
 
     //create operators ($gt,...)
     // queryStr = queryStr.replace(/\b(gt)\b/, m => `$${m}`);
-    if(req.params.userId && req.user.role === 'store'){
-        reqQuery.user = req.params.userId;
+    console.log(req.user);
+    if(req.user && req.user.role === 'store'){
+        reqQuery.user = req.user.id;
     }
     const stores = await Store.find(reqQuery).populate('user');
     res.status(200).json({ 
@@ -54,12 +55,7 @@ exports.getStore = asyncHandler( async(req, res, next) => {
 // @access Private
 
 exports.createStore = asyncHandler( async(req, res, next) => {
-    const userId = req.params.userId;
-    const user = UserService.getOne(userId);
-
-    if(!user) return next(new errorResponse(`User not found id: ${userId}`, 404));
-
-    req.body.user = userId;
+    req.body.user = req.user.id;
     const store = await StoreService.create(req.body);
     
     res.status(200).json({ 

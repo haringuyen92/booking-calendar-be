@@ -8,7 +8,7 @@ const SettingSlot = mongoose.Schema({
     },
     isRequiredStaff: {
         type: String,
-        default: 'optional' //not_used, required, optional
+        default: 'optional' //not_used, used, optional
     },
     isUseCostStaff: {
         type: Boolean,
@@ -16,7 +16,7 @@ const SettingSlot = mongoose.Schema({
     },
     isRequiredCourse: {
         type: String,
-        default: 'optional' //not_used, required, optional
+        default: 'optional' //not_used, used, optional
     },
     isUseCostCourse: {
         type: Boolean,

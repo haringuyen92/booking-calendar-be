@@ -4,9 +4,11 @@ const storeRouter = express.Router({ mergeParams: true });
 const staffRouter = require('./staff');
 const courseRouter = require('./course');
 const { protect, authorize } = require('../middleware/auth');
+const settingRouter = require("./setting");
 
 storeRouter.use('/:storeId/staffs', staffRouter);
 storeRouter.use('/:storeId/courses', courseRouter);
+storeRouter.use('/:id', settingRouter);
 storeRouter
     .route('/')
     .get(protect, getStores)
