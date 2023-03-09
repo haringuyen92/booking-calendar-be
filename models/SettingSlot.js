@@ -11,16 +11,16 @@ const SettingSlot = mongoose.Schema({
         default: 'optional' //not_used, used, optional
     },
     isUseCostStaff: {
-        type: Boolean,
-        default: false
+        type: String,
+        default: 'used' //used, not_used
     },
     isRequiredCourse: {
         type: String,
         default: 'optional' //not_used, used, optional
     },
     isUseCostCourse: {
-        type: Boolean,
-        default: false
+        type: String,
+        default: 'used' //used, not_used
     },
     defaultCourseEstimationTime: {
         type: Number,
