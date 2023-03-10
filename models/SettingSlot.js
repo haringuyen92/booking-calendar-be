@@ -25,11 +25,9 @@ const SettingSlot = mongoose.Schema({
     defaultCourseEstimationTime: {
         type: Number,
         default: 15
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
     }
+}, {
+    timestamps: true
 })
 
 module.exports = mongoose.model('SettingSlot', SettingSlot);

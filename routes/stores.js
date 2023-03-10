@@ -8,7 +8,7 @@ const settingRouter = require("./setting");
 
 storeRouter.use('/:storeId/staffs', staffRouter);
 storeRouter.use('/:storeId/courses', courseRouter);
-storeRouter.use('/:id', settingRouter);
+storeRouter.use('/:storeId', settingRouter);
 storeRouter
     .route('/')
     .get(protect, getStores)

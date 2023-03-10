@@ -7,5 +7,7 @@ settingRouter
     .route('/settingSlot')
     .get(protect, authorize('store'), getSettingSlot)
     .post(protect, authorize('store'), postSettingSlot);
-
+settingRouter
+    .route('/settingTime')
+    .get(protect, authorize('store', 'admin'), )
 module.exports = settingRouter;
