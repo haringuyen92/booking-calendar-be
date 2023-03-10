@@ -27,7 +27,8 @@ const SettingSlot = mongoose.Schema({
         default: 15
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    collection: 'settingSlots'
 })
 
 module.exports = mongoose.model('SettingSlot', SettingSlot);

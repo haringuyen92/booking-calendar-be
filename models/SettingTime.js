@@ -47,7 +47,8 @@ const SettingTime = mongoose.Schema({
         required: true
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    collection: 'settingTimes'
 })
 
 module.exports = mongoose.model('SettingTime', SettingTime)

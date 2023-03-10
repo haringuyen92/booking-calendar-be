@@ -33,11 +33,10 @@ const Staff = mongoose.Schema({
     cancelWithBeforeTime: {
         type: Number,
         default: 0
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
+    }
+}, {
+    timestamps: true,
+    collection: 'settingBookings'
 })
 
 module.exports = mongoose.model('Staff', Staff);
