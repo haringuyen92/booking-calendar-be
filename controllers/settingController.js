@@ -25,7 +25,8 @@ module.exports.postSettingSlot = asyncHandler(async (req, res, err) => {
 module.exports.getSettingTime = asyncHandler(async (req, res, err) => {
     const {storeId} = req.params;
 
-    const settingTime = SettingService.getSettingTime(storeId);
+    const settingTime = await SettingService.getSettingTime(storeId);
+
     return res.status(200).json({
         success: true,
         message: "success getSettingTime",
