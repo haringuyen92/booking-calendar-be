@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    command: "mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=myapp
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  master:
+    depends_on:
+      mysql:
+        condition: service_healthy
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /src/cmd/master
+    ports:
+      - "8080:8080"
+    environment:
+      GOCACHE: /go-cache
+    volumes:
+      - ./src:/src
+      - go-cache:/go-cache
+      - ./air-config.toml:/air-config.toml
+    entrypoint: [ "air", "-c", "/air-config.toml" ]
+
+volumes:
+  mysql_data:
+  go-cache:
