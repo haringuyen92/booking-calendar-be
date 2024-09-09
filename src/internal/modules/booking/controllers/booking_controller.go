@@ -21,7 +21,7 @@ func NewBookingController(
 	}
 }
 
-func (co *BookingController) CreateBooking(c *gin.Context, req *requests.CreateBookingRequest) error {
+func (co *BookingController) POST_Create(c *gin.Context, req *requests.CreateBookingRequest) error {
 	err := co.bookingService.CreateBooking(&dto.CreateBookingDto{})
 	if err != nil {
 		return interceptors.ResponseError(c, err)
@@ -29,7 +29,7 @@ func (co *BookingController) CreateBooking(c *gin.Context, req *requests.CreateB
 	return interceptors.ResponseSuccess(c, nil)
 }
 
-func (co *BookingController) DeleteBooking(c *gin.Context, req *requests.DeleteBookingRequest) error {
+func (co *BookingController) DELETE_Delete(c *gin.Context, req *requests.DeleteBookingRequest) error {
 	err := co.bookingService.DeleteBooking(&filters.BookingFilter{})
 	if err != nil {
 		return interceptors.ResponseError(c, err)
@@ -37,7 +37,7 @@ func (co *BookingController) DeleteBooking(c *gin.Context, req *requests.DeleteB
 	return interceptors.ResponseSuccess(c, nil)
 }
 
-func (co *BookingController) UpdateBooking(c *gin.Context, req *requests.UpdateBookingRequest) error {
+func (co *BookingController) PUT_Update(c *gin.Context, req *requests.UpdateBookingRequest) error {
 	err := co.bookingService.UpdateBooking(
 		&filters.BookingFilter{ID: req.ID},
 		&dto.UpdateBookingDto{},
@@ -48,7 +48,7 @@ func (co *BookingController) UpdateBooking(c *gin.Context, req *requests.UpdateB
 	return interceptors.ResponseSuccess(c, nil)
 }
 
-func (co *BookingController) GetBooking(c *gin.Context, req *requests.GetBookingRequest) error {
+func (co *BookingController) GET_Get(c *gin.Context, req *requests.GetBookingRequest) error {
 	res, err := co.bookingService.GetBooking(&filters.BookingFilter{
 		ID: req.ID,
 	})
@@ -59,7 +59,7 @@ func (co *BookingController) GetBooking(c *gin.Context, req *requests.GetBooking
 	return interceptors.ResponseSuccess(c, res)
 }
 
-func (co *BookingController) GetBookings(c *gin.Context, req *requests.GetAllBookingRequest) error {
+func (co *BookingController) GET_List(c *gin.Context, req *requests.GetAllBookingRequest) error {
 	res, err := co.bookingService.GetBookingList(&filters.BookingFilter{
 		UserID: req.UserID,
 	})
