@@ -9,11 +9,11 @@ import (
 )
 
 type BookingService interface {
-	CreateBooking(dto *dto.CreateBookingDto) error
-	UpdateBooking(filter *filters.BookingFilter, dto *dto.UpdateBookingDto) error
-	DeleteBooking(filter *filters.BookingFilter) error
-	GetBooking(filter *filters.BookingFilter) (*responses.GetBookingResponse, error)
-	GetBookingList(filter *filters.BookingFilter) ([]*responses.GetAllBookingResponse, error)
+	Create(dto *dto.CreateBookingDto) error
+	Update(filter *filters.BookingFilter, dto *dto.UpdateBookingDto) error
+	Delete(filter *filters.BookingFilter) error
+	GetOne(filter *filters.BookingFilter) (*responses.GetBookingResponse, error)
+	GetMany(filter *filters.BookingFilter) ([]*responses.GetAllBookingResponse, error)
 }
 
 type bookingService struct {
@@ -28,19 +28,19 @@ func NewBookingService(
 	}
 }
 
-func (b *bookingService) CreateBooking(dto *dto.CreateBookingDto) error {
+func (b *bookingService) Create(dto *dto.CreateBookingDto) error {
 	return b.bookingRepository.Create(dto)
 }
 
-func (b *bookingService) UpdateBooking(filter *filters.BookingFilter, dto *dto.UpdateBookingDto) error {
+func (b *bookingService) Update(filter *filters.BookingFilter, dto *dto.UpdateBookingDto) error {
 	return b.bookingRepository.Update(filter, dto)
 }
 
-func (b *bookingService) DeleteBooking(filter *filters.BookingFilter) error {
+func (b *bookingService) Delete(filter *filters.BookingFilter) error {
 	return b.bookingRepository.Delete(filter)
 }
 
-func (b *bookingService) GetBooking(filter *filters.BookingFilter) (*responses.GetBookingResponse, error) {
+func (b *bookingService) GetOne(filter *filters.BookingFilter) (*responses.GetBookingResponse, error) {
 	booking, err := b.bookingRepository.GetOne(filter)
 	if err != nil {
 		return nil, err
@@ -48,7 +48,7 @@ func (b *bookingService) GetBooking(filter *filters.BookingFilter) (*responses.G
 	return mappers.GetBookingResponseMapper(booking), nil
 }
 
-func (b *bookingService) GetBookingList(filter *filters.BookingFilter) ([]*responses.GetAllBookingResponse, error) {
+func (b *bookingService) GetMany(filter *filters.BookingFilter) ([]*responses.GetAllBookingResponse, error) {
 	bookings, err := b.bookingRepository.GetMany(filter)
 	if err != nil {
 		return nil, err

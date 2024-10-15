@@ -22,7 +22,7 @@ func NewBookingController(
 }
 
 func (co *BookingController) Create(c *gin.Context, req *requests.CreateBookingRequest) error {
-	err := co.bookingService.CreateBooking(&dto.CreateBookingDto{})
+	err := co.bookingService.Create(&dto.CreateBookingDto{})
 	if err != nil {
 		return interceptors.ResponseError(c, err)
 	}
@@ -30,7 +30,7 @@ func (co *BookingController) Create(c *gin.Context, req *requests.CreateBookingR
 }
 
 func (co *BookingController) Delete(c *gin.Context, req *requests.DeleteBookingRequest) error {
-	err := co.bookingService.DeleteBooking(&filters.BookingFilter{})
+	err := co.bookingService.Delete(&filters.BookingFilter{})
 	if err != nil {
 		return interceptors.ResponseError(c, err)
 	}
@@ -38,7 +38,7 @@ func (co *BookingController) Delete(c *gin.Context, req *requests.DeleteBookingR
 }
 
 func (co *BookingController) Update(c *gin.Context, req *requests.UpdateBookingRequest) error {
-	err := co.bookingService.UpdateBooking(
+	err := co.bookingService.Update(
 		&filters.BookingFilter{ID: req.ID},
 		&dto.UpdateBookingDto{},
 	)
@@ -49,7 +49,7 @@ func (co *BookingController) Update(c *gin.Context, req *requests.UpdateBookingR
 }
 
 func (co *BookingController) Get(c *gin.Context, req *requests.GetBookingRequest) error {
-	res, err := co.bookingService.GetBooking(&filters.BookingFilter{
+	res, err := co.bookingService.GetOne(&filters.BookingFilter{
 		ID: req.ID,
 	})
 
@@ -60,7 +60,7 @@ func (co *BookingController) Get(c *gin.Context, req *requests.GetBookingRequest
 }
 
 func (co *BookingController) GetAll(c *gin.Context, req *requests.GetAllBookingRequest) error {
-	res, err := co.bookingService.GetBookingList(&filters.BookingFilter{
+	res, err := co.bookingService.GetMany(&filters.BookingFilter{
 		UserID: req.UserID,
 	})
 

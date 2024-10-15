@@ -15,7 +15,7 @@ type BookingRepository interface {
 	GetMany(filter *filters.BookingFilter) ([]*models.Booking, error)
 	Create(dto *dto.CreateBookingDto) error
 	Update(filter *filters.BookingFilter, dto *dto.UpdateBookingDto) error
-	DeleteBookingByID(ID string) error
+	DeleteByID(ID string) error
 	Delete(filter *filters.BookingFilter) error
 }
 
@@ -66,7 +66,7 @@ func (b *bookingRepository) Update(filter *filters.BookingFilter, dto *dto.Updat
 	return nil
 }
 
-func (b *bookingRepository) DeleteBookingByID(ID string) error {
+func (b *bookingRepository) DeleteByID(ID string) error {
 	return b.Delete(&filters.BookingFilter{ID: ID})
 }
 
