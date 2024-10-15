@@ -1,7 +1,7 @@
 package filters
 
 type BookingFilter struct {
-	ID      uint
+	ID      string
 	UserID  uint
 	StoreID uint
 }

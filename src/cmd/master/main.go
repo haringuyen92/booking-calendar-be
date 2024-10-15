@@ -5,6 +5,7 @@ import (
 	"booking-calendar-server-backend/internal/modules/booking/repositories"
 	"booking-calendar-server-backend/internal/modules/booking/routers"
 	"booking-calendar-server-backend/internal/modules/booking/services"
+	"booking-calendar-server-backend/pkg/boostrap"
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,9 @@ import (
 
 func main() {
 	fx.New(
+		boostrap.All(),
+		boostrap.WithMongoDB(),
+
 		fx.Provide(NewGinEngine),
 		fx.Provide(NewHTTPServer),
 
@@ -59,6 +63,11 @@ func NewHTTPServer(lc fx.Lifecycle, engine *gin.Engine) *http.Server {
 	return srv
 }
 
-func RegisterRoutes(r *gin.Engine, bookingController *controllers.BookingController) {
-	routers.RegisterBookingRouters(r, "/booking", bookingController)
+func RegisterRoutes(
+	r *gin.Engine,
+	bookingController *controllers.BookingController,
+) {
+	// BOOKING
+	bookingGroup := r.Group("/api/bookings")
+	routers.RegisterBookingRouters(bookingGroup, bookingController)
 }

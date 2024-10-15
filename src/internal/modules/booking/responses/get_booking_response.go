@@ -1,5 +1,5 @@
 package responses
 
 type GetBookingResponse struct {
-	ID uint `json:"id"`
+	ID string `json:"id"`
 }

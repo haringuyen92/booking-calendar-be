@@ -1,3 +1,5 @@
 package requests
 
-type DeleteBookingRequest struct{}
+type DeleteBookingRequest struct {
+	ID string `json:"id"`
+}

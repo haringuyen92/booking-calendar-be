@@ -1,57 +1,67 @@
 package routers
 
 import (
+	"booking-calendar-server-backend/internal/modules/booking/controllers"
+	"booking-calendar-server-backend/internal/modules/booking/requests"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"reflect"
-	"strings"
 )
 
-type RegisterBookingRoutersIn struct {
-}
+func RegisterBookingRouters(group *gin.RouterGroup, bookingController *controllers.BookingController) {
+	group.GET("/", func(c *gin.Context) {
+		var req requests.GetAllBookingRequest
+		if err := c.ShouldBindQuery(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		err := bookingController.GetAll(c, &req)
+		if err != nil {
+			return
+		}
+	})
 
-func RegisterBookingRouters(r *gin.Engine, basePath string, controller interface{}) {
-	controllerType := reflect.TypeOf(controller)
-	controllerValue := reflect.ValueOf(controller)
+	group.GET("/:id", func(c *gin.Context) {
+		var req requests.GetBookingRequest
+		req.ID = c.Param("id")
 
-	for i := 0; i < controllerType.NumMethod(); i++ {
-		method := controllerType.Method(i)
-		httpMethod := strings.ToUpper(strings.Split(method.Name, "_")[0])
-		path := strings.ToLower(strings.Split(method.Name, "_")[1])
+		err := bookingController.Get(c, &req)
+		if err != nil {
+			return
+		}
+	})
 
-		r.Handle(httpMethod, basePath+"/"+path, func(c *gin.Context) {
-			// Get the method type
-			methodType := method.Type
+	group.POST("", func(c *gin.Context) {
+		var req requests.CreateBookingRequest
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		err := bookingController.Create(c, &req)
+		if err != nil {
+			// Lỗi đã được xử lý trong controller
+			return
+		}
+	})
 
-			// Create a slice to hold the arguments
-			args := make([]reflect.Value, methodType.NumIn())
-			args[0] = controllerValue    // The receiver (controller instance)
-			args[1] = reflect.ValueOf(c) // The gin.Context
+	group.PUT("/:id", func(c *gin.Context) {
+		var req requests.UpdateBookingRequest
+		req.ID = c.Param("id")
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		err := bookingController.Update(c, &req)
+		if err != nil {
+			return
+		}
+	})
 
-			// If the method expects more than 2 arguments, we need to create the request struct
-			if methodType.NumIn() > 2 {
-				// Get the type of the request struct
-				reqType := methodType.In(2)
-				// Create a new instance of the request struct
-				reqValue := reflect.New(reqType.Elem())
-
-				// Bind the request data to the struct
-				if err := c.ShouldBind(reqValue.Interface()); err != nil {
-					c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-					return
-				}
-
-				args[2] = reqValue
-			}
-
-			// Call the method
-			results := method.Func.Call(args)
-
-			// Check if an error was returned
-			if len(results) > 0 && !results[0].IsNil() {
-				err := results[0].Interface().(error)
-				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			}
-		})
-	}
+	group.DELETE("/:id", func(c *gin.Context) {
+		var req requests.DeleteBookingRequest
+		req.ID = c.Param("id")
+		err := bookingController.Delete(c, &req)
+		if err != nil {
+			return
+		}
+	})
 }

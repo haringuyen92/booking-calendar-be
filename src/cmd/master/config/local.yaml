@@ -1,0 +1,4 @@
+app:
+  mongodb:
+    uri: mongodb://root:secret@mongo:27017/
+    database: dev

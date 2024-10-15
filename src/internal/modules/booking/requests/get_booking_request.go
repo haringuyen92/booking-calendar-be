@@ -1,5 +1,5 @@
 package requests
 
 type GetBookingRequest struct {
-	ID uint `json:"id"`
+	ID string `json:"id"`
 }

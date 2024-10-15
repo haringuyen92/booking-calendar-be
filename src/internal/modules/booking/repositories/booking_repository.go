@@ -4,26 +4,34 @@ import (
 	"booking-calendar-server-backend/internal/modules/booking/dto"
 	"booking-calendar-server-backend/internal/modules/booking/filters"
 	"booking-calendar-server-backend/internal/modules/booking/models"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type BookingRepository interface {
-	GetBookingByID(ID uint) (*models.Booking, error)
+	GetBookingByID(ID string) (*models.Booking, error)
 	GetBookingByStoreID(storeID uint) ([]*models.Booking, error)
 	GetBookingByUserID(userID uint) ([]*models.Booking, error)
 	GetOne(filter *filters.BookingFilter) (*models.Booking, error)
 	GetMany(filter *filters.BookingFilter) ([]*models.Booking, error)
 	Create(dto *dto.CreateBookingDto) error
 	Update(filter *filters.BookingFilter, dto *dto.UpdateBookingDto) error
-	DeleteBookingByID(ID uint) error
+	DeleteBookingByID(ID string) error
 	Delete(filter *filters.BookingFilter) error
 }
 
-type bookingRepository struct{}
-
-func NewBookingRepository() BookingRepository {
-	return &bookingRepository{}
+type bookingRepository struct {
+	bookingCollection *mongo.Collection
 }
-func (b *bookingRepository) GetBookingByID(ID uint) (*models.Booking, error) {
+
+func NewBookingRepository(
+	mongoDB *mongo.Database,
+) BookingRepository {
+	bookingCollection := mongoDB.Collection("bookings")
+	return &bookingRepository{
+		bookingCollection: bookingCollection,
+	}
+}
+func (b *bookingRepository) GetBookingByID(ID string) (*models.Booking, error) {
 	return b.GetOne(&filters.BookingFilter{
 		ID: ID,
 	})
@@ -58,7 +66,7 @@ func (b *bookingRepository) Update(filter *filters.BookingFilter, dto *dto.Updat
 	return nil
 }
 
-func (b *bookingRepository) DeleteBookingByID(ID uint) error {
+func (b *bookingRepository) DeleteBookingByID(ID string) error {
 	return b.Delete(&filters.BookingFilter{ID: ID})
 }
 

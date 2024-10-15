@@ -9,7 +9,7 @@ func GetAllBookingResponseMapper(bookings []*models.Booking) []*responses.GetAll
 	var response []*responses.GetAllBookingResponse
 	for _, booking := range bookings {
 		response = append(response, &responses.GetAllBookingResponse{
-			ID: booking.ID,
+			ID: booking.ID.Hex(),
 		})
 	}
 	return response
