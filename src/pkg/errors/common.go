@@ -20,11 +20,11 @@ func (e ErrorCode) String() string {
 	case e >= BaseStoreErrorCode && e < BaseCourseErrorCode:
 		return "Store"
 	case e >= BaseCourseErrorCode && e < BaseStaffErrorCode:
-		return "Store"
-	case e >= BaseStaffErrorCode && e < BaseBookingErrorCode:
 		return "Course"
-	case e >= BaseBookingErrorCode:
+	case e >= BaseStaffErrorCode && e < BaseBookingErrorCode:
 		return "Staff"
+	case e >= BaseBookingErrorCode:
+		return "Booking"
 	default:
 		return "Unknown"
 	}
@@ -35,10 +35,9 @@ func messagePrefixByErrorCode(code ErrorCode, rawMsg string) (newMsg string) {
 	return
 }
 
-func NewError(code ErrorCode, err error) *Error {
-	message := messagePrefixByErrorCode(code, err.Error())
+func NewError(code ErrorCode, message string) *Error {
 	return &Error{
 		Code:    code,
-		Message: message,
+		Message: messagePrefixByErrorCode(code, message),
 	}
 }

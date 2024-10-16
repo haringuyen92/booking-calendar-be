@@ -24,7 +24,7 @@ func RegisterBookingRouters(group *gin.RouterGroup, bookingController *controlle
 		var req requests.GetBookingRequest
 		req.ID = c.Param("id")
 
-		err := bookingController.Get(c, &req)
+		err := bookingController.GetOne(c, &req)
 		if err != nil {
 			return
 		}

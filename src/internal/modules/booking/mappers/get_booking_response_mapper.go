@@ -6,5 +6,11 @@ import (
 )
 
 func GetBookingResponseMapper(model *models.Booking) *responses.GetBookingResponse {
-	return &responses.GetBookingResponse{}
+	return &responses.GetBookingResponse{
+		ID:        model.ID.Hex(),
+		CreateAt:  model.CreatedAt,
+		UpdateAt:  model.UpdatedAt,
+		StartTime: model.StartTime,
+		EndTime:   model.EndTime,
+	}
 }

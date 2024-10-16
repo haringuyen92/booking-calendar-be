@@ -48,7 +48,7 @@ func (co *BookingController) Update(c *gin.Context, req *requests.UpdateBookingR
 	return interceptors.ResponseSuccess(c, nil)
 }
 
-func (co *BookingController) Get(c *gin.Context, req *requests.GetBookingRequest) error {
+func (co *BookingController) GetOne(c *gin.Context, req *requests.GetBookingRequest) error {
 	res, err := co.bookingService.GetOne(&filters.BookingFilter{
 		ID: req.ID,
 	})
