@@ -5,6 +5,10 @@ import (
 	"booking-calendar-server-backend/internal/modules/booking/repositories"
 	"booking-calendar-server-backend/internal/modules/booking/routers"
 	"booking-calendar-server-backend/internal/modules/booking/services"
+	store_controllers "booking-calendar-server-backend/internal/modules/store/controllers"
+	"booking-calendar-server-backend/internal/modules/store/repositories"
+	store_routers "booking-calendar-server-backend/internal/modules/store/routers"
+	store_services "booking-calendar-server-backend/internal/modules/store/services"
 	"booking-calendar-server-backend/pkg/boostrap"
 	"context"
 	"fmt"
@@ -18,6 +22,7 @@ func main() {
 	fx.New(
 		boostrap.All(),
 		boostrap.WithMongoDB(),
+		boostrap.WithDatabase(),
 
 		fx.Provide(NewGinEngine),
 		fx.Provide(NewHTTPServer),
@@ -25,6 +30,10 @@ func main() {
 		fx.Provide(repositories.NewBookingRepository),
 		fx.Provide(services.NewBookingService),
 		fx.Provide(controllers.NewBookingController),
+
+		fx.Provide(stores_repositories.NewStoreRepository),
+		fx.Provide(store_services.NewStoreService),
+		fx.Provide(store_controllers.NewStoreController),
 
 		fx.Invoke(RegisterRoutes),
 		fx.Invoke(func(*http.Server) {}),
@@ -66,8 +75,13 @@ func NewHTTPServer(lc fx.Lifecycle, engine *gin.Engine) *http.Server {
 func RegisterRoutes(
 	r *gin.Engine,
 	bookingController *controllers.BookingController,
+	storeController *store_controllers.StoreController,
 ) {
 	// BOOKING
 	bookingGroup := r.Group("/api/bookings")
 	routers.RegisterBookingRouters(bookingGroup, bookingController)
+
+	storeGroup := r.Group("/api/stores")
+	store_routers.RegisterRouters(storeGroup, storeController)
+
 }
