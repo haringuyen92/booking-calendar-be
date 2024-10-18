@@ -1,4 +1,4 @@
-package errors
+package booking_errors
 
 import "booking-calendar-server-backend/pkg/errors"
 

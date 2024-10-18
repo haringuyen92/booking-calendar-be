@@ -1,4 +1,4 @@
-package filters
+package booking_filters
 
 type BookingFilter struct {
 	ID        string `json:"_id,omitempty" bson:"_id,omitempty"`

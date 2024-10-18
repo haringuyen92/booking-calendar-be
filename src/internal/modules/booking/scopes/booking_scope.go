@@ -1,12 +1,12 @@
-package scopes
+package booking_scopes
 
 import (
-	"booking-calendar-server-backend/internal/modules/booking/filters"
+	booking_filters "booking-calendar-server-backend/internal/modules/booking/filters"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func BookingScope(filter *filters.BookingFilter) bson.D {
+func BookingScope(filter *booking_filters.BookingFilter) bson.D {
 	query := bson.D{}
 	if filter.ID != "" {
 		mongoID, err := primitive.ObjectIDFromHex(filter.ID)

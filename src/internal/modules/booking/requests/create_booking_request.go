@@ -1,3 +1,3 @@
-package requests
+package booking_requests
 
 type CreateBookingRequest struct{}

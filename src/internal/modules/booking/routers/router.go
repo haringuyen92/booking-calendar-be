@@ -1,15 +1,15 @@
-package routers
+package booking_routers
 
 import (
-	"booking-calendar-server-backend/internal/modules/booking/controllers"
-	"booking-calendar-server-backend/internal/modules/booking/requests"
+	booking_controllers "booking-calendar-server-backend/internal/modules/booking/controllers"
+	booking_requests "booking-calendar-server-backend/internal/modules/booking/requests"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func RegisterBookingRouters(group *gin.RouterGroup, bookingController *controllers.BookingController) {
+func RegisterBookingRouters(group *gin.RouterGroup, bookingController *booking_controllers.BookingController) {
 	group.GET("/", func(c *gin.Context) {
-		var req requests.GetAllBookingRequest
+		var req booking_requests.GetAllBookingRequest
 		if err := c.ShouldBindQuery(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -21,7 +21,7 @@ func RegisterBookingRouters(group *gin.RouterGroup, bookingController *controlle
 	})
 
 	group.GET("/:id", func(c *gin.Context) {
-		var req requests.GetBookingRequest
+		var req booking_requests.GetBookingRequest
 		req.ID = c.Param("id")
 
 		err := bookingController.GetOne(c, &req)
@@ -31,7 +31,7 @@ func RegisterBookingRouters(group *gin.RouterGroup, bookingController *controlle
 	})
 
 	group.POST("", func(c *gin.Context) {
-		var req requests.CreateBookingRequest
+		var req booking_requests.CreateBookingRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -44,7 +44,7 @@ func RegisterBookingRouters(group *gin.RouterGroup, bookingController *controlle
 	})
 
 	group.PUT("/:id", func(c *gin.Context) {
-		var req requests.UpdateBookingRequest
+		var req booking_requests.UpdateBookingRequest
 		req.ID = c.Param("id")
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -57,7 +57,7 @@ func RegisterBookingRouters(group *gin.RouterGroup, bookingController *controlle
 	})
 
 	group.DELETE("/:id", func(c *gin.Context) {
-		var req requests.DeleteBookingRequest
+		var req booking_requests.DeleteBookingRequest
 		req.ID = c.Param("id")
 		err := bookingController.Delete(c, &req)
 		if err != nil {

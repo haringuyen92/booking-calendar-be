@@ -1,26 +1,26 @@
-package repositories
+package booking_repositories
 
 import (
-	"booking-calendar-server-backend/internal/modules/booking/dto"
-	"booking-calendar-server-backend/internal/modules/booking/errors"
-	"booking-calendar-server-backend/internal/modules/booking/filters"
-	"booking-calendar-server-backend/internal/modules/booking/models"
-	"booking-calendar-server-backend/internal/modules/booking/scopes"
+	booking_dto "booking-calendar-server-backend/internal/modules/booking/dto"
+	booking_errors "booking-calendar-server-backend/internal/modules/booking/errors"
+	booking_filters "booking-calendar-server-backend/internal/modules/booking/filters"
+	booking_models "booking-calendar-server-backend/internal/modules/booking/models"
+	booking_scopes "booking-calendar-server-backend/internal/modules/booking/scopes"
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
 	"time"
 )
 
 type BookingRepository interface {
-	GetBookingByID(ID string) (*models.Booking, error)
-	GetBookingByStoreID(storeID uint) ([]*models.Booking, error)
-	GetBookingByUserID(userID uint) ([]*models.Booking, error)
-	GetOne(filter *filters.BookingFilter) (*models.Booking, error)
-	GetMany(filter *filters.BookingFilter) ([]*models.Booking, error)
-	Create(dto *dto.CreateBookingDto) error
-	Update(filter *filters.BookingFilter, dto *dto.UpdateBookingDto) error
+	GetBookingByID(ID string) (*booking_models.Booking, error)
+	GetBookingByStoreID(storeID uint) ([]*booking_models.Booking, error)
+	GetBookingByUserID(userID uint) ([]*booking_models.Booking, error)
+	GetOne(filter *booking_filters.BookingFilter) (*booking_models.Booking, error)
+	GetMany(filter *booking_filters.BookingFilter) ([]*booking_models.Booking, error)
+	Create(dto *booking_dto.CreateBookingDto) error
+	Update(filter *booking_filters.BookingFilter, dto *booking_dto.UpdateBookingDto) error
 	DeleteByID(ID string) error
-	Delete(filter *filters.BookingFilter) error
+	Delete(filter *booking_filters.BookingFilter) error
 }
 
 type bookingRepository struct {
@@ -35,29 +35,29 @@ func NewBookingRepository(
 		bookingCollection: bookingCollection,
 	}
 }
-func (r *bookingRepository) GetBookingByID(ID string) (*models.Booking, error) {
-	return r.GetOne(&filters.BookingFilter{
+func (r *bookingRepository) GetBookingByID(ID string) (*booking_models.Booking, error) {
+	return r.GetOne(&booking_filters.BookingFilter{
 		ID: ID,
 	})
 }
 
-func (r *bookingRepository) GetBookingByStoreID(storeID uint) ([]*models.Booking, error) {
-	return r.GetMany(&filters.BookingFilter{
+func (r *bookingRepository) GetBookingByStoreID(storeID uint) ([]*booking_models.Booking, error) {
+	return r.GetMany(&booking_filters.BookingFilter{
 		StoreID: storeID,
 	})
 }
 
-func (r *bookingRepository) GetBookingByUserID(userID uint) ([]*models.Booking, error) {
-	return r.GetMany(&filters.BookingFilter{
+func (r *bookingRepository) GetBookingByUserID(userID uint) ([]*booking_models.Booking, error) {
+	return r.GetMany(&booking_filters.BookingFilter{
 		UserID: userID,
 	})
 }
 
-func (r *bookingRepository) GetOne(filter *filters.BookingFilter) (*models.Booking, error) {
-	var booking *models.Booking
-	scope := scopes.BookingScope(filter)
+func (r *bookingRepository) GetOne(filter *booking_filters.BookingFilter) (*booking_models.Booking, error) {
+	var booking *booking_models.Booking
+	scope := booking_scopes.BookingScope(filter)
 	if len(scope) == 0 {
-		return nil, errors.BookingNotFoundError
+		return nil, booking_errors.BookingNotFoundError
 	}
 
 	err := r.bookingCollection.FindOne(context.Background(), scope).Decode(&booking)
@@ -68,16 +68,16 @@ func (r *bookingRepository) GetOne(filter *filters.BookingFilter) (*models.Booki
 	return booking, nil
 }
 
-func (r *bookingRepository) GetMany(filter *filters.BookingFilter) ([]*models.Booking, error) {
-	var bookings []*models.Booking
-	cursor, err := r.bookingCollection.Find(context.Background(), scopes.BookingScope(filter))
+func (r *bookingRepository) GetMany(filter *booking_filters.BookingFilter) ([]*booking_models.Booking, error) {
+	var bookings []*booking_models.Booking
+	cursor, err := r.bookingCollection.Find(context.Background(), booking_scopes.BookingScope(filter))
 	if err != nil {
 		return nil, err
 	}
 
 	defer cursor.Close(context.Background())
 	for cursor.Next(context.Background()) {
-		var booking models.Booking
+		var booking booking_models.Booking
 		if err := cursor.Decode(&booking); err != nil {
 			return nil, err
 		}
@@ -86,7 +86,7 @@ func (r *bookingRepository) GetMany(filter *filters.BookingFilter) ([]*models.Bo
 	return bookings, nil
 }
 
-func (r *bookingRepository) Create(dto *dto.CreateBookingDto) error {
+func (r *bookingRepository) Create(dto *booking_dto.CreateBookingDto) error {
 	now := time.Now()
 	dto.CreatedAt = &now
 	dto.UpdatedAt = &now
@@ -97,11 +97,11 @@ func (r *bookingRepository) Create(dto *dto.CreateBookingDto) error {
 	return nil
 }
 
-func (r *bookingRepository) Update(filter *filters.BookingFilter, dto *dto.UpdateBookingDto) error {
+func (r *bookingRepository) Update(filter *booking_filters.BookingFilter, dto *booking_dto.UpdateBookingDto) error {
 	now := time.Now()
 	dto.UpdatedAt = now
 
-	_, err := r.bookingCollection.UpdateOne(context.Background(), scopes.BookingScope(filter), dto)
+	_, err := r.bookingCollection.UpdateOne(context.Background(), booking_scopes.BookingScope(filter), dto)
 	if err != nil {
 		return err
 	}
@@ -109,12 +109,12 @@ func (r *bookingRepository) Update(filter *filters.BookingFilter, dto *dto.Updat
 }
 
 func (r *bookingRepository) DeleteByID(ID string) error {
-	return r.Delete(&filters.BookingFilter{ID: ID})
+	return r.Delete(&booking_filters.BookingFilter{ID: ID})
 }
 
-func (r *bookingRepository) Delete(filter *filters.BookingFilter) error {
+func (r *bookingRepository) Delete(filter *booking_filters.BookingFilter) error {
 	now := time.Now()
-	return r.Update(filter, &dto.UpdateBookingDto{
+	return r.Update(filter, &booking_dto.UpdateBookingDto{
 		DeletedAt: now,
 	})
 }

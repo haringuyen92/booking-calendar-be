@@ -1,4 +1,4 @@
-package responses
+package booking_responses
 
 import "time"
 

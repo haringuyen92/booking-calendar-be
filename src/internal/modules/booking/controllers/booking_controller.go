@@ -1,4 +1,4 @@
-package controllers
+package booking_controllers
 
 import (
 	"booking-calendar-server-backend/internal/core/base/interceptors"
@@ -10,37 +10,37 @@ import (
 )
 
 type BookingController struct {
-	bookingService services.BookingService
+	bookingService booking_services.BookingService
 }
 
 func NewBookingController(
-	bookingService services.BookingService,
+	bookingService booking_services.BookingService,
 ) *BookingController {
 	return &BookingController{
 		bookingService: bookingService,
 	}
 }
 
-func (co *BookingController) Create(c *gin.Context, req *requests.CreateBookingRequest) error {
-	err := co.bookingService.Create(&dto.CreateBookingDto{})
+func (co *BookingController) Create(c *gin.Context, req *booking_requests.CreateBookingRequest) error {
+	err := co.bookingService.Create(&booking_dto.CreateBookingDto{})
 	if err != nil {
 		return interceptors.ResponseError(c, err)
 	}
 	return interceptors.ResponseSuccess(c, nil)
 }
 
-func (co *BookingController) Delete(c *gin.Context, req *requests.DeleteBookingRequest) error {
-	err := co.bookingService.Delete(&filters.BookingFilter{})
+func (co *BookingController) Delete(c *gin.Context, req *booking_requests.DeleteBookingRequest) error {
+	err := co.bookingService.Delete(&booking_filters.BookingFilter{})
 	if err != nil {
 		return interceptors.ResponseError(c, err)
 	}
 	return interceptors.ResponseSuccess(c, nil)
 }
 
-func (co *BookingController) Update(c *gin.Context, req *requests.UpdateBookingRequest) error {
+func (co *BookingController) Update(c *gin.Context, req *booking_requests.UpdateBookingRequest) error {
 	err := co.bookingService.Update(
-		&filters.BookingFilter{ID: req.ID},
-		&dto.UpdateBookingDto{},
+		&booking_filters.BookingFilter{ID: req.ID},
+		&booking_dto.UpdateBookingDto{},
 	)
 	if err != nil {
 		return interceptors.ResponseError(c, err)
@@ -48,8 +48,8 @@ func (co *BookingController) Update(c *gin.Context, req *requests.UpdateBookingR
 	return interceptors.ResponseSuccess(c, nil)
 }
 
-func (co *BookingController) GetOne(c *gin.Context, req *requests.GetBookingRequest) error {
-	res, err := co.bookingService.GetOne(&filters.BookingFilter{
+func (co *BookingController) GetOne(c *gin.Context, req *booking_requests.GetBookingRequest) error {
+	res, err := co.bookingService.GetOne(&booking_filters.BookingFilter{
 		ID: req.ID,
 	})
 
@@ -59,8 +59,8 @@ func (co *BookingController) GetOne(c *gin.Context, req *requests.GetBookingRequ
 	return interceptors.ResponseSuccess(c, res)
 }
 
-func (co *BookingController) GetAll(c *gin.Context, req *requests.GetAllBookingRequest) error {
-	res, err := co.bookingService.GetMany(&filters.BookingFilter{
+func (co *BookingController) GetAll(c *gin.Context, req *booking_requests.GetAllBookingRequest) error {
+	res, err := co.bookingService.GetMany(&booking_filters.BookingFilter{
 		UserID: req.UserID,
 	})
 

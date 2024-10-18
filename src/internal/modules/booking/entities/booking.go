@@ -1,1 +1,1 @@
-package entities
+package booking_entities

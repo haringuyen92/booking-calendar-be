@@ -1,18 +1,19 @@
 package main
 
 import (
-	"booking-calendar-server-backend/internal/modules/booking/controllers"
-	"booking-calendar-server-backend/internal/modules/booking/repositories"
-	"booking-calendar-server-backend/internal/modules/booking/routers"
-	"booking-calendar-server-backend/internal/modules/booking/services"
+	booking_controllers "booking-calendar-server-backend/internal/modules/booking/controllers"
+	booking_repositories "booking-calendar-server-backend/internal/modules/booking/repositories"
+	booking_routers "booking-calendar-server-backend/internal/modules/booking/routers"
+	booking_services "booking-calendar-server-backend/internal/modules/booking/services"
 	store_controllers "booking-calendar-server-backend/internal/modules/store/controllers"
-	"booking-calendar-server-backend/internal/modules/store/repositories"
+	stores_repositories "booking-calendar-server-backend/internal/modules/store/repositories"
 	store_routers "booking-calendar-server-backend/internal/modules/store/routers"
 	store_services "booking-calendar-server-backend/internal/modules/store/services"
 	"booking-calendar-server-backend/pkg/boostrap"
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
 	"go.uber.org/fx"
 	"net"
 	"net/http"
@@ -27,9 +28,9 @@ func main() {
 		fx.Provide(NewGinEngine),
 		fx.Provide(NewHTTPServer),
 
-		fx.Provide(repositories.NewBookingRepository),
-		fx.Provide(services.NewBookingService),
-		fx.Provide(controllers.NewBookingController),
+		fx.Provide(booking_repositories.NewBookingRepository),
+		fx.Provide(booking_services.NewBookingService),
+		fx.Provide(booking_controllers.NewBookingController),
 
 		fx.Provide(stores_repositories.NewStoreRepository),
 		fx.Provide(store_services.NewStoreService),
@@ -74,12 +75,12 @@ func NewHTTPServer(lc fx.Lifecycle, engine *gin.Engine) *http.Server {
 
 func RegisterRoutes(
 	r *gin.Engine,
-	bookingController *controllers.BookingController,
+	bookingController *booking_controllers.BookingController,
 	storeController *store_controllers.StoreController,
 ) {
 	// BOOKING
 	bookingGroup := r.Group("/api/bookings")
-	routers.RegisterBookingRouters(bookingGroup, bookingController)
+	booking_routers.RegisterBookingRouters(bookingGroup, bookingController)
 
 	storeGroup := r.Group("/api/stores")
 	store_routers.RegisterRouters(storeGroup, storeController)

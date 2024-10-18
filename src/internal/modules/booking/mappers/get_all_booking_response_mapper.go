@@ -1,14 +1,14 @@
-package mappers
+package booking_mappers
 
 import (
-	"booking-calendar-server-backend/internal/modules/booking/models"
+	booking_models "booking-calendar-server-backend/internal/modules/booking/models"
 	"booking-calendar-server-backend/internal/modules/booking/responses"
 )
 
-func GetAllBookingResponseMapper(bookings []*models.Booking) []*responses.GetAllBookingResponse {
-	var response []*responses.GetAllBookingResponse
+func GetAllBookingResponseMapper(bookings []*booking_models.Booking) []*booking_responses.GetAllBookingResponse {
+	var response []*booking_responses.GetAllBookingResponse
 	for _, booking := range bookings {
-		response = append(response, &responses.GetAllBookingResponse{
+		response = append(response, &booking_responses.GetAllBookingResponse{
 			ID: booking.ID.Hex(),
 		})
 	}
