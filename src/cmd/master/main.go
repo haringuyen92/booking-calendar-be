@@ -1,14 +1,8 @@
 package main
 
 import (
-	booking_controllers "booking-calendar-server-backend/internal/modules/booking/controllers"
-	booking_repositories "booking-calendar-server-backend/internal/modules/booking/repositories"
-	booking_routers "booking-calendar-server-backend/internal/modules/booking/routers"
-	booking_services "booking-calendar-server-backend/internal/modules/booking/services"
-	store_controllers "booking-calendar-server-backend/internal/modules/store/controllers"
-	stores_repositories "booking-calendar-server-backend/internal/modules/store/repositories"
-	store_routers "booking-calendar-server-backend/internal/modules/store/routers"
-	store_services "booking-calendar-server-backend/internal/modules/store/services"
+	"booking-calendar-server-backend/internal/modules/booking"
+	"booking-calendar-server-backend/internal/modules/store"
 	"booking-calendar-server-backend/pkg/boostrap"
 	"context"
 	"fmt"
@@ -28,15 +22,9 @@ func main() {
 		fx.Provide(NewGinEngine),
 		fx.Provide(NewHTTPServer),
 
-		fx.Provide(booking_repositories.NewBookingRepository),
-		fx.Provide(booking_services.NewBookingService),
-		fx.Provide(booking_controllers.NewBookingController),
+		booking.Provider(),
+		store.Provider(),
 
-		fx.Provide(stores_repositories.NewStoreRepository),
-		fx.Provide(store_services.NewStoreService),
-		fx.Provide(store_controllers.NewStoreController),
-
-		fx.Invoke(RegisterRoutes),
 		fx.Invoke(func(*http.Server) {}),
 	).Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
@@ -71,18 +59,4 @@ func NewHTTPServer(lc fx.Lifecycle, engine *gin.Engine) *http.Server {
 		},
 	})
 	return srv
-}
-
-func RegisterRoutes(
-	r *gin.Engine,
-	bookingController *booking_controllers.BookingController,
-	storeController *store_controllers.StoreController,
-) {
-	// BOOKING
-	bookingGroup := r.Group("/api/bookings")
-	booking_routers.RegisterBookingRouters(bookingGroup, bookingController)
-
-	storeGroup := r.Group("/api/stores")
-	store_routers.RegisterRouters(storeGroup, storeController)
-
 }
