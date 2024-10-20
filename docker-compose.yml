@@ -10,8 +10,13 @@ services:
       timeout: 5s
       retries: 5
     environment:
-      MYSQL_DATABASE: db
-      MYSQL_ROOT_PASSWORD: secret
+#      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=db
+#      - MYSQL_USER=user
+#      - MYSQL_PASSWORD=password
+#    environment:
+#      MYSQL_DATABASE: db
+#      MYSQL_ROOT_PASSWORD: secret
     ports:
       - "3306:3306"
     volumes:

@@ -7,7 +7,7 @@ app:
     driver: mysql
 
     # When dsn is provided, it will override all above connection configs
-    dsn: root:secret@tcp(mysql:3306)/db?parseTime=true
+    dsn: root:password@tcp(mysql:3306)/db?parseTime=true
     #    dsn: root:secret@tcp(localhost:3306)/db?parseTime=true
 
     # The maximum number of open connections to the database.
