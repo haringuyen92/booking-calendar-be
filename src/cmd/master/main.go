@@ -2,6 +2,7 @@ package main
 
 import (
 	"booking-calendar-server-backend/internal/modules/booking"
+	"booking-calendar-server-backend/internal/modules/course"
 	"booking-calendar-server-backend/internal/modules/staff"
 	"booking-calendar-server-backend/internal/modules/store"
 	"booking-calendar-server-backend/pkg/boostrap"
@@ -26,6 +27,7 @@ func main() {
 		booking.Provider(),
 		store.Provider(),
 		staff.Provider(),
+		course.Provider(),
 
 		fx.Invoke(func(*http.Server) {}),
 	).Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
