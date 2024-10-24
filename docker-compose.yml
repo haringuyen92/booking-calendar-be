@@ -58,7 +58,25 @@ services:
       - go-cache:/go-cache
       - ./air-config.toml:/air-config.toml
     entrypoint: [ "air", "-c", "/air-config.toml" ]
-
+  gateway:
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /src/cmd/gateway
+    ports:
+      - "8088:8088"
+    environment:
+      GOCACHE: /go-cache
+    volumes:
+      - ./src:/src
+      - go-cache:/go-cache
+      - ./air-config.toml:/air-config.toml
+    entrypoint: [ "air", "-c", "/air-config.toml" ]
 volumes:
   mysql_data:
   mongo_data:
