@@ -11,7 +11,7 @@ func main() {
 		fx.Provide(boostrap.NewGinEngine),
 		fx.Provide(boostrap.NewHTTPServer),
 
-		fx.Provide(gateway.Provider),
+		gateway.Provider(),
 
 		fx.Invoke(boostrap.OnStartHttpServer),
 		fx.Invoke(boostrap.OnStopHttpServer),
