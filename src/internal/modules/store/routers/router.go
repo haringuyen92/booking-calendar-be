@@ -9,7 +9,7 @@ import (
 )
 
 func RegisterRouters(group *gin.RouterGroup, controller *store_controllers.StoreController) {
-	group.GET("/", func(c *gin.Context) {
+	group.GET("", func(c *gin.Context) {
 		var req store_requests.GetAllStoreRequest
 		if err := c.ShouldBindQuery(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

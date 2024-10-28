@@ -3,9 +3,14 @@ module booking-calendar-server-backend
 go 1.23.2
 
 require (
+	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-gonic/gin v1.10.0
+	github.com/go-sql-driver/mysql v1.7.0
+	github.com/golibs-starter/golib v1.0.1
+	github.com/golibs-starter/golib-data v1.0.0
 	go.mongodb.org/mongo-driver v1.16.1
 	go.uber.org/fx v1.22.2
+	gorm.io/gorm v1.25.12
 )
 
 require (
@@ -22,11 +27,8 @@ require (
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.22.0 // indirect
-	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/goccy/go-json v0.10.3 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
-	github.com/golibs-starter/golib v1.0.1 // indirect
-	github.com/golibs-starter/golib-data v1.0.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
@@ -77,5 +79,4 @@ require (
 	gorm.io/driver/mysql v1.5.0 // indirect
 	gorm.io/driver/postgres v1.5.0 // indirect
 	gorm.io/driver/sqlite v1.5.6 // indirect
-	gorm.io/gorm v1.25.12 // indirect
 )

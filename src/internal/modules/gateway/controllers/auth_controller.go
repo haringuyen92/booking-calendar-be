@@ -14,6 +14,6 @@ func NewAuthController() *AuthController {
 }
 
 func (co *AuthController) Login(ctx *gin.Context, req *gateway_requests.AuthRequest) error {
-	fmt.Println("Login with jwt:", req.Jwt)
+	fmt.Println("Login with jwt:", req.Code)
 	return interceptors.ResponseSuccess(ctx, nil)
 }
