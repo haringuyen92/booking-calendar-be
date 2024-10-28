@@ -8,6 +8,8 @@ import (
 
 func main() {
 	fx.New(
+		boostrap.All(),
+
 		fx.Provide(boostrap.NewGinEngine),
 		fx.Provide(boostrap.NewHTTPServer),
 
