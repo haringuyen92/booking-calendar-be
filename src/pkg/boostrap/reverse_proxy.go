@@ -11,7 +11,13 @@ import (
 	"strings"
 )
 
-func ReverseProxy(c *gin.Context) {
+func ReverseProxy(gin *gin.Engine) {
+	gin.Any("/api/stores/*proxyPath", reverseProxy)
+	gin.Any("/api/bookings/*proxyPath", reverseProxy)
+	gin.Any("/api/users/*proxyPath", reverseProxy)
+}
+
+func reverseProxy(c *gin.Context) {
 	serviceName := extractServiceName(c.Request.URL.Path)
 	target, err := forwardTo(serviceName)
 	if err != nil {

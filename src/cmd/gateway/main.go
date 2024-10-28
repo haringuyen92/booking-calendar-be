@@ -17,5 +17,6 @@ func main() {
 
 		fx.Invoke(boostrap.OnStartHttpServer),
 		fx.Invoke(boostrap.OnStopHttpServer),
+		fx.Invoke(boostrap.ReverseProxy),
 	).Run()
 }

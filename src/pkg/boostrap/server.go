@@ -30,9 +30,6 @@ func NewGinEngine() *gin.Engine {
 			"message": "pong",
 		})
 	})
-	r.Any("/api/stores/*proxyPath", ReverseProxy)
-	r.Any("/api/bookings/*proxyPath", ReverseProxy)
-	r.Any("/api/users/*proxyPath", ReverseProxy)
 	return r
 }
 
