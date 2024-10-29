@@ -13,6 +13,8 @@ import (
 
 func ReverseProxy(gin *gin.Engine) {
 	gin.Any("/api/stores/*proxyPath", reverseProxy)
+	gin.Any("/api/staffs/*proxyPath", reverseProxy)
+	gin.Any("/api/courses/*proxyPath", reverseProxy)
 	gin.Any("/api/bookings/*proxyPath", reverseProxy)
 	gin.Any("/api/users/*proxyPath", reverseProxy)
 }

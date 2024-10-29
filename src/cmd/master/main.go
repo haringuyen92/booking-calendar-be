@@ -1,10 +1,6 @@
 package main
 
 import (
-	"booking-calendar-server-backend/internal/modules/booking"
-	"booking-calendar-server-backend/internal/modules/course"
-	"booking-calendar-server-backend/internal/modules/staff"
-	"booking-calendar-server-backend/internal/modules/store"
 	"booking-calendar-server-backend/internal/modules/user"
 	"booking-calendar-server-backend/pkg/boostrap"
 	"context"
@@ -25,10 +21,6 @@ func main() {
 		fx.Provide(NewGinEngine),
 		fx.Provide(NewHTTPServer),
 
-		booking.Provider(),
-		store.Provider(),
-		staff.Provider(),
-		course.Provider(),
 		user.Provider(),
 
 		fx.Invoke(func(*http.Server) {}),
