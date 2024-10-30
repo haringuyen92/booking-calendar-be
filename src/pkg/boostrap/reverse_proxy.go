@@ -32,14 +32,23 @@ func reverseProxy(c *gin.Context) {
 		panic(err)
 	}
 	proxy := httputil.NewSingleHostReverseProxy(remote)
+	originalDirector := proxy.Director
+
 	proxy.Director = func(req *http.Request) {
-		req.URL.Scheme = remote.Scheme
-		req.URL.Host = remote.Host
-
+		originalDirector(req)
 		req.URL.Path = strings.TrimPrefix(req.URL.Path, "/api/"+serviceName)
-
 		req.Header.Set("X-Forwarded-Host", req.Host)
 		req.Host = remote.Host
+	}
+
+	proxy.ModifyResponse = func(resp *http.Response) error {
+		// Xóa tất cả các CORS header từ response của service được proxy
+		resp.Header.Del("Access-Control-Allow-Origin")
+		resp.Header.Del("Access-Control-Allow-Credentials")
+		resp.Header.Del("Access-Control-Allow-Methods")
+		resp.Header.Del("Access-Control-Allow-Headers")
+		resp.Header.Del("Access-Control-Expose-Headers")
+		return nil
 	}
 
 	proxy.ServeHTTP(c.Writer, c.Request)

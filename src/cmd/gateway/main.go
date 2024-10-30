@@ -15,8 +15,8 @@ func main() {
 
 		gateway.Provider(),
 
+		fx.Invoke(boostrap.ReverseProxy),
 		fx.Invoke(boostrap.OnStartHttpServer),
 		fx.Invoke(boostrap.OnStopHttpServer),
-		fx.Invoke(boostrap.ReverseProxy),
 	).Run()
 }

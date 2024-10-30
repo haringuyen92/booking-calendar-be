@@ -19,6 +19,11 @@ func registerRoutes(
 	r *gin.Engine,
 	authController *gateway_controllers.AuthController,
 ) {
+	r.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "gateway health check success",
+		})
+	})
 	authGroup := r.Group("/api/auth")
 	gateway_routers.RegisterGatewayRouters(authGroup, authController)
 }
