@@ -3,12 +3,58 @@ package store_routers
 import (
 	store_controllers "booking-calendar-server-backend/internal/modules/store/controllers"
 	store_requests "booking-calendar-server-backend/internal/modules/store/requests"
+	store_requests2 "booking-calendar-server-backend/internal/modules/store/requests/settings"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 )
 
-func RegisterRouters(group *gin.RouterGroup, controller *store_controllers.StoreController) {
+func RegisterRouters(
+	group *gin.RouterGroup,
+	controller *store_controllers.StoreController,
+	settingStoreController *store_controllers.SettingController,
+) {
+	group.GET("/:id/setting-time", func(c *gin.Context) {
+		var req store_requests2.GetSettingTimeRequest
+		id, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			return
+		}
+		if id == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "id is required"})
+			return
+		}
+		req.StoreID = uint(id)
+		err = settingStoreController.GetSettingTime(c, &req)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+	})
+
+	group.PUT("/:id/setting-time", func(c *gin.Context) {
+		var req store_requests2.UpdateSettingTimeRequest
+		id, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			return
+		}
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		if id == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+			return
+		}
+		req.StoreID = uint(id)
+		err = settingStoreController.UpdateSettingTime(c, &req)
+		fmt.Println("req.IsOpen", req.IsOpen)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+	})
 	group.GET("", func(c *gin.Context) {
 		var req store_requests.GetAllStoreRequest
 		if err := c.ShouldBindQuery(&req); err != nil {
@@ -25,6 +71,10 @@ func RegisterRouters(group *gin.RouterGroup, controller *store_controllers.Store
 		var req store_requests.GetStoreRequest
 		id, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
+			return
+		}
+		if id == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
 			return
 		}
 		req.ID = uint(id)
@@ -54,11 +104,18 @@ func RegisterRouters(group *gin.RouterGroup, controller *store_controllers.Store
 		if err != nil {
 			return
 		}
-		req.ID = uint(id)
+
+		if id == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+			return
+		}
+
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
+		req.ID = uint(id)
+
 		err = controller.Update(c, &req)
 		if err != nil {
 			return
@@ -71,6 +128,12 @@ func RegisterRouters(group *gin.RouterGroup, controller *store_controllers.Store
 		if err != nil {
 			return
 		}
+
+		if id == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+			return
+		}
+
 		req.ID = uint(id)
 		err = controller.Delete(c, &req)
 		if err != nil {

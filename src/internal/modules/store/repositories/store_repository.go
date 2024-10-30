@@ -32,7 +32,18 @@ func NewStoreRepository(
 }
 
 func (r *storeRepository) Create(dto *store_dto.CreateStoreDto) error {
-	err := r.db.Create(&dto).Error
+	err := r.db.Create(&models.Store{
+		UserID:      dto.UserID,
+		Name:        dto.Name,
+		Description: dto.Description,
+		Address:     dto.Address,
+		Website:     dto.Website,
+		Logo:        dto.Logo,
+		Email:       dto.Email,
+		Phone:       dto.Phone,
+		Location:    dto.Location,
+		Status:      dto.Status,
+	}).Error
 	if err != nil {
 		return err
 	}

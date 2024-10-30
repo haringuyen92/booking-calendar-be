@@ -15,7 +15,7 @@ const (
 
 func (e ErrorCode) String() string {
 	switch {
-	case e >= BaseUserErrorCode && e < BaseStaffErrorCode:
+	case e >= BaseUserErrorCode && e < BaseStoreErrorCode:
 		return "User"
 	case e >= BaseStoreErrorCode && e < BaseCourseErrorCode:
 		return "Store"

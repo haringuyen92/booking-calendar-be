@@ -33,15 +33,12 @@ func reverseProxy(c *gin.Context) {
 	}
 	proxy := httputil.NewSingleHostReverseProxy(remote)
 	proxy.Director = func(req *http.Request) {
-		originalPath := req.URL.Path
-		originalRawQuery := req.URL.RawQuery
-
 		req.URL.Scheme = remote.Scheme
 		req.URL.Host = remote.Host
-		req.URL.Path = originalPath
-		req.URL.RawQuery = originalRawQuery
 
-		req.Header.Set("X-Forwarded-Host", c.Request.Header.Get("Host"))
+		req.URL.Path = strings.TrimPrefix(req.URL.Path, "/api/"+serviceName)
+
+		req.Header.Set("X-Forwarded-Host", req.Host)
 		req.Host = remote.Host
 	}
 

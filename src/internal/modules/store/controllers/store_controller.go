@@ -43,7 +43,14 @@ func (co *StoreController) GetAll(c *gin.Context, req *store_requests.GetAllStor
 
 func (co *StoreController) Create(c *gin.Context, req *store_requests.CreateStoreRequest) error {
 	err := co.storeService.Create(&store_dto.CreateStoreDto{
-		Name: req.Name,
+		Name:        req.Name,
+		Description: req.Description,
+		Address:     req.Address,
+		Website:     req.Website,
+		Logo:        req.Logo,
+		Email:       req.Email,
+		Phone:       req.Phone,
+		Location:    req.Location,
 	})
 	if err != nil {
 		return interceptors.ResponseError(c, err)
@@ -57,7 +64,15 @@ func (co *StoreController) Update(c *gin.Context, req *store_requests.UpdateStor
 			ID: req.ID,
 		},
 		&store_dto.UpdateStoreDto{
-			Name: req.Name,
+			Name:        req.Name,
+			Description: req.Description,
+			Address:     req.Address,
+			Website:     req.Website,
+			Logo:        req.Logo,
+			Email:       req.Email,
+			Phone:       req.Phone,
+			Location:    req.Location,
+			Status:      req.Status,
 		},
 	)
 	if err != nil {

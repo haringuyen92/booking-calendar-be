@@ -1,11 +1,15 @@
 package store_services
 
 import (
+	"booking-calendar-server-backend/internal/core/enums"
 	store_dto "booking-calendar-server-backend/internal/modules/store/dto"
+	store_errors "booking-calendar-server-backend/internal/modules/store/errors"
 	store_filter "booking-calendar-server-backend/internal/modules/store/filters"
 	store_mappers "booking-calendar-server-backend/internal/modules/store/mappers"
 	stores_repositories "booking-calendar-server-backend/internal/modules/store/repositories"
 	store_responses "booking-calendar-server-backend/internal/modules/store/responses"
+	"errors"
+	"gorm.io/gorm"
 )
 
 type StoreService interface {
@@ -31,6 +35,9 @@ func NewStoreService(
 func (s *storeService) GetOne(filter *store_filter.StoreFilter) (*store_responses.GetStoreResponse, error) {
 	store, err := s.storeRepository.GetOne(filter)
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, store_errors.StoreNotFoundError
+		}
 		return nil, err
 	}
 	return store_mappers.GetStoreResponseMapper(store), nil
@@ -45,6 +52,7 @@ func (s *storeService) GetMany(filter *store_filter.StoreFilter) ([]*store_respo
 }
 
 func (s *storeService) Create(dto *store_dto.CreateStoreDto) error {
+	dto.Status = enums.CLOSED
 	err := s.storeRepository.Create(dto)
 	if err != nil {
 		return err

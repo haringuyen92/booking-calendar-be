@@ -1,5 +1,5 @@
 package store_requests
 
 type GetStoreRequest struct {
-	ID uint `json:"id"`
+	ID uint `json:"id,omitempty"`
 }
