@@ -15,10 +15,12 @@ func Provider() fx.Option {
 		fx.Provide(stores_repositories.NewStoreRepository),
 		fx.Provide(store_services.NewStoreService),
 		fx.Provide(store_controllers.NewStoreController),
+		fx.Provide(store_controllers.NewSettingController),
+		fx.Provide(store_routers.NewSettingRouter),
+		fx.Provide(store_routers.NewStoreRouter),
 
 		fx.Provide(stores_repositories.NewSettingTimeRepository),
 		fx.Provide(store_service.NewSettingStoreService),
-		fx.Provide(store_controllers.NewSettingController),
 
 		fx.Invoke(registerRoutes),
 	)
@@ -26,13 +28,13 @@ func Provider() fx.Option {
 
 func registerRoutes(
 	r *gin.Engine,
-	storeController *store_controllers.StoreController,
-	settingStoreController *store_controllers.SettingController,
+	rSetting *store_routers.SettingRouter,
+	rStore *store_routers.StoreRouter,
 ) {
-	storeGroup := r.Group("")
+	group := r.Group("")
 	store_routers.RegisterRouters(
-		storeGroup,
-		storeController,
-		settingStoreController,
+		group,
+		rSetting,
+		rStore,
 	)
 }
