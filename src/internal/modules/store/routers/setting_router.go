@@ -108,6 +108,9 @@ func (s *SettingRouter) updateSettingBooking() gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		err := s.h.UpdateSettingTime()
+		err = s.h.UpdateSettingBooking(c, &req)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
 	}
 }
