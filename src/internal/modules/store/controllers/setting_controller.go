@@ -55,7 +55,7 @@ func (co *SettingController) GetSettingBooking(c *gin.Context, req *store_reques
 func (co *SettingController) UpdateSettingBooking(c *gin.Context, req *store_requests.UpdateSettingBookingRequest) error {
 	err := co.settingStoreService.UpdateSettingBooking(
 		req.StoreID,
-		req.Setting,
+		store_formatters.UpdateSettingBookingFormatter(req),
 	)
 	if err != nil {
 		return interceptors.ResponseError(c, err)
@@ -64,7 +64,7 @@ func (co *SettingController) UpdateSettingBooking(c *gin.Context, req *store_req
 }
 
 func (co *SettingController) GetSettingSlot(c *gin.Context, req *store_requests.GetSettingSlotRequest) error {
-	res, err := co.settingStoreService.GetSettingTime(&store_filter.SettingTimeFilter{
+	res, err := co.settingStoreService.GetSettingSlot(&store_filter.SettingSlotFilter{
 		StoreID: req.StoreID,
 	})
 	if err != nil {
@@ -74,7 +74,10 @@ func (co *SettingController) GetSettingSlot(c *gin.Context, req *store_requests.
 }
 
 func (co *SettingController) UpdateSettingSlot(c *gin.Context, req *store_requests.UpdateSettingSlotRequest) error {
-	err := co.settingStoreService.UpdateSettingSlot(req.StoreID, req.Setting)
+	err := co.settingStoreService.UpdateSettingSlot(
+		req.StoreID,
+		store_formatters.UpdateSettingSlotFormatter(req),
+	)
 	if err != nil {
 		return interceptors.ResponseError(c, err)
 	}

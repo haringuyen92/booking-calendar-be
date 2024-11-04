@@ -20,6 +20,8 @@ func Provider() fx.Option {
 		fx.Provide(store_routers.NewStoreRouter),
 
 		fx.Provide(stores_repositories.NewSettingTimeRepository),
+		fx.Provide(stores_repositories.NewSettingBookingRepository),
+		fx.Provide(stores_repositories.NewSettingSlotRepository),
 		fx.Provide(store_service.NewSettingStoreService),
 
 		fx.Invoke(registerRoutes),

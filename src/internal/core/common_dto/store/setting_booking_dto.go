@@ -16,6 +16,6 @@ type SettingBookingDto struct {
 }
 
 type SettingBookingRequestDto struct {
-	Require        bool `json:"is_require" bson:"is_require"`
+	Require        bool `json:"require" bson:"require"`
 	WithBeforeTime uint `json:"with_before_time" bson:"with_before_time"`
 }
