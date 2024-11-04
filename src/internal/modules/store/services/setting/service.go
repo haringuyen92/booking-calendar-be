@@ -10,16 +10,21 @@ import (
 type SettingStoreService interface {
 	GetSettingTime(filter *store_filter.SettingTimeFilter) (*common_dto.SettingTimeDto, error)
 	UpdateSettingTime(storeID uint, dto *store_dto.UpdateSettingTimeDto) error
+	GetSettingBooking(filter *store_filter.SettingBookingFilter) (*common_dto.SettingBookingDto, error)
+	UpdateSettingBooking(storeID uint, dto *store_dto.UpdateSettingBookingDto) error
 }
 
 func NewSettingStoreService(
 	settingTimeRepository stores_repositories.SettingTimeRepository,
+	settingBookingRepository stores_repositories.SettingBookingRepository,
 ) SettingStoreService {
 	return &settingStoreService{
-		settingTimeRepository: settingTimeRepository,
+		settingTimeRepository:    settingTimeRepository,
+		settingBookingRepository: settingBookingRepository,
 	}
 }
 
 type settingStoreService struct {
-	settingTimeRepository stores_repositories.SettingTimeRepository
+	settingTimeRepository    stores_repositories.SettingTimeRepository
+	settingBookingRepository stores_repositories.SettingBookingRepository
 }

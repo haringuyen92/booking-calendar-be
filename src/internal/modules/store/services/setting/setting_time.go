@@ -13,17 +13,6 @@ func (s *settingStoreService) GetSettingTime(filter *store_filter.SettingTimeFil
 func (s *settingStoreService) UpdateSettingTime(storeID uint, dto *store_dto.UpdateSettingTimeDto) error {
 	return s.settingTimeRepository.UpdateSettingTime(
 		storeID,
-		&common_dto.SettingTimeDto{
-			IsOpen:              dto.IsOpen,
-			IsApplyDailySetting: dto.IsApplyDailySetting,
-			DailySetting:        dto.DailySetting,
-			MondaySetting:       dto.MondaySetting,
-			TuesdaySetting:      dto.TuesdaySetting,
-			WednesdaySetting:    dto.WednesdaySetting,
-			ThursdaySetting:     dto.ThursdaySetting,
-			FridaySetting:       dto.FridaySetting,
-			SaturdaySetting:     dto.SaturdaySetting,
-			SundaySetting:       dto.SundaySetting,
-		},
+		dto.Setting,
 	)
 }

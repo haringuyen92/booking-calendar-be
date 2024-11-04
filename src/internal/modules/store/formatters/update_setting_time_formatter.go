@@ -8,7 +8,7 @@ import (
 
 func UpdateSettingTimeFormatter(req *store_requests2.UpdateSettingTimeRequest) *store_dto.UpdateSettingTimeDto {
 	return &store_dto.UpdateSettingTimeDto{
-		SettingTimeDto: common_dto.SettingTimeDto{
+		Setting: &common_dto.SettingTimeDto{
 			StoreID:             req.StoreID,
 			IsOpen:              req.IsOpen,
 			IsApplyDailySetting: req.IsApplyDailySetting,

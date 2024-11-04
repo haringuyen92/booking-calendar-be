@@ -41,3 +41,24 @@ func (co *SettingController) UpdateSettingTime(c *gin.Context, req *store_reques
 	}
 	return interceptors.ResponseSuccess(c, nil)
 }
+
+func (co *SettingController) GetSettingBooking(c *gin.Context, req *store_requests.GetSettingBookingRequest) error {
+	res, err := co.settingStoreService.GetSettingBooking(&store_filter.SettingBookingFilter{
+		StoreID: req.StoreID,
+	})
+	if err != nil {
+		return interceptors.ResponseError(c, err)
+	}
+	return interceptors.ResponseSuccess(c, res)
+}
+
+func (co *SettingController) UpdateSettingBooking(c *gin.Context, req *store_requests.UpdateSettingBookingRequest) error {
+	err := co.settingStoreService.UpdateSettingBooking(
+		req.StoreID,
+		req.Setting,
+	)
+	if err != nil {
+		return interceptors.ResponseError(c, err)
+	}
+	return interceptors.ResponseSuccess(c, nil)
+}
