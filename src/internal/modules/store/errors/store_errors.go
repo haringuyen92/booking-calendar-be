@@ -7,6 +7,7 @@ const (
 	StoreNotFoundCode
 	SettingTimeNotFoundCode
 	SettingBookingNotFoundCode
+	SettingSlotNotFoundCode
 )
 
 var (
@@ -14,4 +15,5 @@ var (
 	StoreNotFoundError          = errors.NewError(StoreNotFoundCode, "Store Not Found")
 	SettingTimeNotFoundError    = errors.NewError(StoreUnknownCode, "SettingTime Not Found")
 	SettingBookingNotFoundError = errors.NewError(StoreUnknownCode, "SettingBooking Not Found")
+	SettingSlotNotFoundError    = errors.NewError(StoreUnknownCode, "SettingSlot Not Found")
 )

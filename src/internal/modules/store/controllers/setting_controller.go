@@ -62,3 +62,21 @@ func (co *SettingController) UpdateSettingBooking(c *gin.Context, req *store_req
 	}
 	return interceptors.ResponseSuccess(c, nil)
 }
+
+func (co *SettingController) GetSettingSlot(c *gin.Context, req *store_requests.GetSettingSlotRequest) error {
+	res, err := co.settingStoreService.GetSettingTime(&store_filter.SettingTimeFilter{
+		StoreID: req.StoreID,
+	})
+	if err != nil {
+		return interceptors.ResponseError(c, err)
+	}
+	return interceptors.ResponseSuccess(c, res)
+}
+
+func (co *SettingController) UpdateSettingSlot(c *gin.Context, req *store_requests.UpdateSettingSlotRequest) error {
+	err := co.settingStoreService.UpdateSettingSlot(req.StoreID, req.Setting)
+	if err != nil {
+		return interceptors.ResponseError(c, err)
+	}
+	return interceptors.ResponseSuccess(c, nil)
+}

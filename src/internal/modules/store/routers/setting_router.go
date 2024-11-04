@@ -26,6 +26,7 @@ func (s *SettingRouter) Register(group *gin.RouterGroup) {
 	group.PUT("/:id/setting-time", s.updateSettingTime())
 	group.GET("/:id/setting-booking", s.getSettingBooking())
 	group.PUT("/:id/setting-booking", s.updateSettingBooking())
+	group.GET("/:id/setting-slot", s.getSettingSlot())
 }
 
 func (s *SettingRouter) getSettingTime() gin.HandlerFunc {
@@ -111,6 +112,19 @@ func (s *SettingRouter) updateSettingBooking() gin.HandlerFunc {
 		err = s.h.UpdateSettingBooking(c, &req)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+	}
+}
+
+func (s *SettingRouter) getSettingSlot() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			return
+		}
+		if id == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "id is required"})
+			return
 		}
 	}
 }
