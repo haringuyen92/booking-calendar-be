@@ -10,10 +10,17 @@ func GetAllCourseResponseMapper(courses []*course_models.Course) []*course_respo
 
 	for _, course := range courses {
 		response = append(response, &course_responses.GetAllCourseResponse{
-			ID:        course.ID,
-			Name:      course.Name,
-			CreatedAt: course.CreatedAt,
-			UpdatedAt: course.UpdatedAt,
+			ID:           course.ID,
+			StoreID:      course.StoreID,
+			Name:         course.Name,
+			Image:        course.Image,
+			Description:  course.Description,
+			Cost:         course.Cost,
+			Active:       course.Active,
+			EstimateTime: course.EstimateTime,
+			Position:     course.Position,
+			CreatedAt:    course.CreatedAt,
+			UpdatedAt:    course.UpdatedAt,
 		})
 	}
 

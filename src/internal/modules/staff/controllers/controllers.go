@@ -22,7 +22,9 @@ func NewStaffController(staffService staff_services.StaffService) *StaffControll
 
 func (co *StaffController) GetAll(c *gin.Context, req *staff_requests.GetAllStaffRequest) error {
 	res, err := co.staffService.GetMany(
-		&staff_filter.StaffFilter{},
+		&staff_filter.StaffFilter{
+			StoreID: req.StoreID,
+		},
 	)
 	if err != nil {
 		return interceptors.ResponseError(c, err)
@@ -32,7 +34,10 @@ func (co *StaffController) GetAll(c *gin.Context, req *staff_requests.GetAllStaf
 
 func (co *StaffController) GetOne(c *gin.Context, req *staff_requests.GetStaffRequest) error {
 	res, err := co.staffService.GetOne(
-		&staff_filter.StaffFilter{ID: req.ID},
+		&staff_filter.StaffFilter{
+			ID:      req.ID,
+			StoreID: req.StoreID,
+		},
 	)
 	if err != nil {
 		return interceptors.ResponseError(c, err)
@@ -43,7 +48,15 @@ func (co *StaffController) GetOne(c *gin.Context, req *staff_requests.GetStaffRe
 func (co *StaffController) Create(c *gin.Context, req *staff_requests.CreateStaffRequest) error {
 	err := co.staffService.Create(
 		&staff_dto.CreateStaffDto{
-			Name: req.Name,
+			StoreID:        req.StoreID,
+			Name:           req.Name,
+			Email:          req.Email,
+			Phone:          req.Phone,
+			Cost:           req.Cost,
+			MaxBookingSlot: req.MaxBookingSlot,
+			Color:          req.Color,
+			Position:       req.Position,
+			IsAllCourse:    req.IsAllCourse,
 		},
 	)
 	if err != nil {
@@ -54,9 +67,20 @@ func (co *StaffController) Create(c *gin.Context, req *staff_requests.CreateStaf
 
 func (co *StaffController) Update(c *gin.Context, req *staff_requests.UpdateStaffRequest) error {
 	err := co.staffService.Update(
-		&staff_filter.StaffFilter{ID: req.ID},
+		&staff_filter.StaffFilter{
+			ID:      req.ID,
+			StoreID: req.StoreID,
+		},
 		&staff_dto.UpdateStaffDto{
-			Name: req.Name,
+			Name:           req.Name,
+			Email:          req.Email,
+			Phone:          req.Phone,
+			Cost:           req.Cost,
+			MaxBookingSlot: req.MaxBookingSlot,
+			Active:         req.Active,
+			Color:          req.Color,
+			Position:       req.Position,
+			IsAllCourse:    req.IsAllCourse,
 		},
 	)
 	if err != nil {

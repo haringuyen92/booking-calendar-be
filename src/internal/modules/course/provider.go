@@ -22,6 +22,6 @@ func registerRoutes(
 	r *gin.Engine,
 	courseController *course_controllers.CourseController,
 ) {
-	courseGroup := r.Group("/api/courses")
+	courseGroup := r.Group("/:id/courses")
 	course_routers.RegisterRouters(courseGroup, courseController)
 }

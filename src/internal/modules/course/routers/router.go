@@ -13,72 +13,80 @@ func RegisterRouters(
 	group *gin.RouterGroup,
 	controller *course_controllers.CourseController,
 ) {
-	group.GET("/", func(c *gin.Context) {
+	group.GET("", func(c *gin.Context) {
 		var req course_requests.GetAllCourseRequest
+		storeId, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			return
+		}
+		req.StoreID = uint(storeId)
 		if err := c.ShouldBindQuery(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		err := controller.GetAll(c, &req)
+		_ = controller.GetAll(c, &req)
+	})
+
+	group.GET("/:courseId", func(c *gin.Context) {
+		var req course_requests.GetCourseRequest
+		storeId, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
 			return
 		}
-	})
-
-	group.GET("/:id", func(c *gin.Context) {
-		var req course_requests.GetCourseRequest
-		id, err := strconv.Atoi(c.Param("id"))
+		id, err := strconv.Atoi(c.Param("courseId"))
 		if err != nil {
 			return
 		}
 		req.ID = uint(id)
-
-		err = controller.GetOne(c, &req)
-		if err != nil {
-			return
-		}
+		req.StoreID = uint(storeId)
+		_ = controller.GetOne(c, &req)
 	})
 
 	group.POST("", func(c *gin.Context) {
 		var req course_requests.CreateCourseRequest
+		storeId, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			return
+		}
+		req.StoreID = uint(storeId)
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		err := controller.Create(c, &req)
-		if err != nil {
-			// Lỗi đã được xử lý trong controller
-			return
-		}
+		_ = controller.Create(c, &req)
 	})
 
-	group.PUT("/:id", func(c *gin.Context) {
+	group.PUT("/:courseId", func(c *gin.Context) {
 		var req course_requests.UpdateCourseRequest
-		id, err := strconv.Atoi(c.Param("id"))
+		storeId, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			return
+		}
+		id, err := strconv.Atoi(c.Param("courseId"))
 		if err != nil {
 			return
 		}
 		req.ID = uint(id)
+		req.StoreID = uint(storeId)
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		err = controller.Update(c, &req)
+		_ = controller.Update(c, &req)
+	})
+
+	group.DELETE("/:courseId", func(c *gin.Context) {
+		var req course_requests.DeleteCourseRequest
+		storeId, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
 			return
 		}
-	})
-
-	group.DELETE("/:id", func(c *gin.Context) {
-		var req course_requests.DeleteCourseRequest
 		id, err := strconv.Atoi(c.Param("id"))
 		if err != nil {
 			return
 		}
 		req.ID = uint(id)
-		err = controller.Delete(c, &req)
-		if err != nil {
-			return
-		}
+		req.StoreID = uint(storeId)
+		_ = controller.Delete(c, &req)
 	})
 }

@@ -22,9 +22,15 @@ func NewCourseController(
 	}
 }
 
-func (c *CourseController) Create(ctx *gin.Context, request *course_requests.CreateCourseRequest) error {
+func (c *CourseController) Create(ctx *gin.Context, req *course_requests.CreateCourseRequest) error {
 	err := c.courseService.Create(&course_dto.CreateCourseDto{
-		Name: request.Name,
+		StoreID:      req.StoreID,
+		Name:         req.Name,
+		Image:        req.Image,
+		Description:  req.Description,
+		Cost:         req.Cost,
+		EstimateTime: req.EstimateTime,
+		Position:     req.Position,
 	})
 
 	if err != nil {
@@ -34,12 +40,19 @@ func (c *CourseController) Create(ctx *gin.Context, request *course_requests.Cre
 	return interceptors.ResponseSuccess(ctx, nil)
 }
 
-func (c *CourseController) Update(ctx *gin.Context, request *course_requests.UpdateCourseRequest) error {
+func (c *CourseController) Update(ctx *gin.Context, req *course_requests.UpdateCourseRequest) error {
 	err := c.courseService.Update(
 		&course_filters.CourseFilter{
-			ID: request.ID,
+			ID:      req.ID,
+			StoreID: req.StoreID,
 		}, &course_dto.UpdateCourseDto{
-			Name: request.Name,
+			Name:         req.Name,
+			Image:        req.Image,
+			Description:  req.Description,
+			Cost:         req.Cost,
+			Active:       req.Active,
+			EstimateTime: req.EstimateTime,
+			Position:     req.Position,
 		})
 
 	if err != nil {

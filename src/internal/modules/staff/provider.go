@@ -24,6 +24,6 @@ func registerRoutes(
 	r *gin.Engine,
 	staffController *staff_controllers.StaffController,
 ) {
-	staffGroup := r.Group("/api/staffs")
+	staffGroup := r.Group("/:id/staffs")
 	staff_routers.RegisterRouters(staffGroup, staffController)
 }

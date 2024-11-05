@@ -1,6 +1,7 @@
 package course_repositories
 
 import (
+	"booking-calendar-server-backend/internal/core/enums"
 	course_dto "booking-calendar-server-backend/internal/modules/course/dto"
 	course_filters "booking-calendar-server-backend/internal/modules/course/filters"
 	course_models "booking-calendar-server-backend/internal/modules/course/models"
@@ -27,18 +28,23 @@ type courseRepository struct {
 
 func (r *courseRepository) Create(dto *course_dto.CreateCourseDto) error {
 	course := &course_models.Course{
-		Name: dto.Name,
+		StoreID:      dto.StoreID,
+		Name:         dto.Name,
+		Image:        dto.Image,
+		Description:  dto.Description,
+		Cost:         dto.Cost,
+		EstimateTime: dto.EstimateTime,
+		Active:       enums.COURSE_INACTIVE,
+		Position:     dto.Position,
 	}
 
 	return r.db.Create(course).Error
 }
 
 func (r *courseRepository) Update(filter *course_filters.CourseFilter, dto *course_dto.UpdateCourseDto) error {
-	course := &course_models.Course{
-		Name: dto.Name,
-	}
+	course := &course_models.Course{}
 
-	return r.db.Model(course).Where(filter).Updates(course).Error
+	return r.db.Model(course).Where(filter).Updates(&dto).Error
 }
 
 func (r *courseRepository) GetOne(filter *course_filters.CourseFilter) (*course_models.Course, error) {

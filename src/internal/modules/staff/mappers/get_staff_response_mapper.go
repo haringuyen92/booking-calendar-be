@@ -7,6 +7,16 @@ import (
 
 func GetStaffResponseMapper(staff *staff_models.Staff) *staff_responses.GetStaffResponse {
 	return &staff_responses.GetStaffResponse{
-		ID: staff.ID,
+		ID:             staff.ID,
+		StoreID:        staff.StoreID,
+		Name:           staff.Name,
+		Email:          staff.Email,
+		Phone:          staff.Phone,
+		Cost:           staff.Cost,
+		MaxBookingSlot: staff.MaxBookingSlot,
+		Active:         staff.Active,
+		Color:          staff.Color,
+		Position:       staff.Position,
+		IsAllCourse:    staff.IsAllCourse,
 	}
 }

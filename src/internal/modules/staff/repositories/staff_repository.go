@@ -1,6 +1,7 @@
 package staff_repositories
 
 import (
+	"booking-calendar-server-backend/internal/core/enums"
 	staff_dto "booking-calendar-server-backend/internal/modules/staff/dto"
 	staff_filter "booking-calendar-server-backend/internal/modules/staff/filters"
 	"booking-calendar-server-backend/internal/modules/staff/models"
@@ -33,7 +34,18 @@ func NewStaffRepository(
 }
 
 func (r *staffRepository) Create(dto *staff_dto.CreateStaffDto) error {
-	err := r.db.Create(&dto).Error
+	err := r.db.Create(&staff_models.Staff{
+		StoreID:        dto.StoreID,
+		Name:           dto.Name,
+		Email:          dto.Email,
+		Phone:          dto.Phone,
+		Cost:           dto.Cost,
+		MaxBookingSlot: dto.MaxBookingSlot,
+		Active:         enums.STAFF_INACTIVE,
+		Color:          dto.Color,
+		Position:       dto.Position,
+		IsAllCourse:    dto.IsAllCourse,
+	}).Error
 	if err != nil {
 		return err
 	}
