@@ -2,6 +2,8 @@ package main
 
 import (
 	"ariga.io/atlas-provider-gorm/gormschema"
+	course_models "booking-calendar-server-backend/internal/modules/course/models"
+	staff_models "booking-calendar-server-backend/internal/modules/staff/models"
 	"booking-calendar-server-backend/internal/modules/store/models"
 	"fmt"
 	"io"
@@ -11,6 +13,8 @@ import (
 func main() {
 	stmts, err := gormschema.New("mysql").Load(
 		&models.Store{},
+		&staff_models.Staff{},
+		&course_models.Course{},
 	)
 
 	if err != nil {
