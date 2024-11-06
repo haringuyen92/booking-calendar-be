@@ -81,7 +81,7 @@ func RegisterRouters(
 		if err != nil {
 			return
 		}
-		id, err := strconv.Atoi(c.Param("id"))
+		id, err := strconv.Atoi(c.Param("courseId"))
 		if err != nil {
 			return
 		}

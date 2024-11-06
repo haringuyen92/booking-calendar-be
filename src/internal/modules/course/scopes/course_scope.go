@@ -11,6 +11,9 @@ func CourseScope(filter *course_filters.CourseFilter) func(db *gorm.DB) *gorm.DB
 		if filter.ID != 0 {
 			db = db.Where("id = ?", filter.ID)
 		}
+		if filter.StoreID != 0 {
+			db = db.Where("store_id = ?", filter.StoreID)
+		}
 
 		return db
 	}

@@ -6,7 +6,6 @@ import (
 	staff_filter "booking-calendar-server-backend/internal/modules/staff/filters"
 	"booking-calendar-server-backend/internal/modules/staff/models"
 	staff_scopes "booking-calendar-server-backend/internal/modules/staff/scopes"
-
 	"gorm.io/gorm"
 )
 
@@ -14,7 +13,6 @@ type StaffRepository interface {
 	Create(dto *staff_dto.CreateStaffDto) error
 	Update(filter *staff_filter.StaffFilter, dto *staff_dto.UpdateStaffDto) error
 	GetStaffByID(id uint) (*staff_models.Staff, error)
-	GetStaffByUserID(userID uint) (*staff_models.Staff, error)
 	GetOne(filter *staff_filter.StaffFilter) (*staff_models.Staff, error)
 	GetMany(filter *staff_filter.StaffFilter) ([]*staff_models.Staff, error)
 	DeleteByID(ID uint) error
@@ -65,11 +63,6 @@ func (r *staffRepository) GetStaffByID(id uint) (*staff_models.Staff, error) {
 		ID: id,
 	})
 }
-func (r *staffRepository) GetStaffByUserID(userID uint) (*staff_models.Staff, error) {
-	return r.GetOne(&staff_filter.StaffFilter{
-		UserID: userID,
-	})
-}
 func (r *staffRepository) GetOne(filter *staff_filter.StaffFilter) (*staff_models.Staff, error) {
 	var staff *staff_models.Staff
 	err := r.db.Scopes(staff_scopes.StaffScopes(filter)).First(&staff).Error
@@ -89,6 +82,7 @@ func (r *staffRepository) GetMany(filter *staff_filter.StaffFilter) ([]*staff_mo
 func (r *staffRepository) DeleteByID(ID uint) error {
 	return r.Delete(&staff_filter.StaffFilter{ID: ID})
 }
+
 func (r *staffRepository) Delete(filter *staff_filter.StaffFilter) error {
 	err := r.db.Scopes(staff_scopes.StaffScopes(filter)).Delete(&staff_models.Staff{}).Error
 	if err != nil {

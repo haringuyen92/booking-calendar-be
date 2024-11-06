@@ -56,7 +56,12 @@ func (r *courseRepository) GetOne(filter *course_filters.CourseFilter) (*course_
 func (r *courseRepository) GetMany(filter *course_filters.CourseFilter) ([]*course_models.Course, error) {
 	var courses []*course_models.Course
 
-	return courses, r.db.Scopes(course_scopes.CourseScope(filter)).Find(&courses).Error
+	err := r.db.Scopes(course_scopes.CourseScope(filter)).Find(&courses).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return courses, nil
 }
 
 func (r *courseRepository) DeleteByID(ID uint) error {
@@ -64,5 +69,5 @@ func (r *courseRepository) DeleteByID(ID uint) error {
 }
 
 func (r *courseRepository) Delete(filter *course_filters.CourseFilter) error {
-	return r.db.Delete(&course_models.Course{}, filter).Error
+	return r.db.Scopes(course_scopes.CourseScope(filter)).Delete(&course_models.Course{}, filter).Error
 }

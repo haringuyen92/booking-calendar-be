@@ -6,7 +6,6 @@ import (
 	staff_filter "booking-calendar-server-backend/internal/modules/staff/filters"
 	staff_requests "booking-calendar-server-backend/internal/modules/staff/requests"
 	staff_services "booking-calendar-server-backend/internal/modules/staff/services"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -92,7 +91,8 @@ func (co *StaffController) Update(c *gin.Context, req *staff_requests.UpdateStaf
 func (co *StaffController) Delete(c *gin.Context, req *staff_requests.DeleteStaffRequest) error {
 	err := co.staffService.Delete(
 		&staff_filter.StaffFilter{
-			ID: req.ID,
+			ID:      req.ID,
+			StoreID: req.StoreID,
 		},
 	)
 	if err != nil {

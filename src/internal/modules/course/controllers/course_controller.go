@@ -62,9 +62,10 @@ func (c *CourseController) Update(ctx *gin.Context, req *course_requests.UpdateC
 	return interceptors.ResponseSuccess(ctx, nil)
 }
 
-func (c *CourseController) Delete(ctx *gin.Context, request *course_requests.DeleteCourseRequest) error {
+func (c *CourseController) Delete(ctx *gin.Context, req *course_requests.DeleteCourseRequest) error {
 	err := c.courseService.Delete(&course_filters.CourseFilter{
-		ID: request.ID,
+		ID:      req.ID,
+		StoreID: req.StoreID,
 	})
 
 	if err != nil {
