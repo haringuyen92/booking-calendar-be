@@ -4,6 +4,7 @@ import (
 	"booking-calendar-server-backend/internal/core/base"
 	"booking-calendar-server-backend/pkg/errors"
 	"github.com/gin-gonic/gin"
+	"github.com/golibs-starter/golib/log"
 )
 
 func ResponseError(c *gin.Context, e error) error {
@@ -15,8 +16,10 @@ func ResponseError(c *gin.Context, e error) error {
 		responseErr.Data = nil
 
 		c.JSON(500, responseErr)
+		log.Error(e)
 		return e
 	}
+	log.Error(e)
 	c.JSON(500, e)
 	return e
 }

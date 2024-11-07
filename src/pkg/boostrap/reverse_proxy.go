@@ -2,9 +2,12 @@ package boostrap
 
 import (
 	"booking-calendar-server-backend/internal/core/constant"
+	"bytes"
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/golibs-starter/golib/log"
+	"io"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -36,12 +39,45 @@ func reverseProxy(c *gin.Context) {
 
 	proxy.Director = func(req *http.Request) {
 		originalDirector(req)
-		req.URL.Path = strings.TrimPrefix(req.URL.Path, "/api/"+serviceName)
+		oldPath := req.URL.Path
+
+		newPath := strings.TrimPrefix(req.URL.Path, "/api/"+serviceName)
+		if newPath == "" {
+			newPath = "/"
+		}
+		req.URL.Path = newPath
+		fmt.Printf("Forwarding request: %s%s -> %s%s\n", req.Host, oldPath, remote.Host, newPath)
 		req.Header.Set("X-Forwarded-Host", req.Host)
 		req.Host = remote.Host
 	}
 
 	proxy.ModifyResponse = func(resp *http.Response) error {
+		// log response
+		if resp.StatusCode >= 400 {
+			// Đọc body
+			bodyBytes, err := io.ReadAll(resp.Body)
+			if err != nil {
+				log.Errorf("\n[PROXY] Error reading response body: %v\n", err)
+				return err
+			}
+
+			// Quan trọng: Phải tạo body reader mới vì original đã bị đọc
+			resp.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+
+			// Log error response
+			log.Errorf("\n[PROXY] Error Response [%d] for %s %s\nBody: %s\n",
+				resp.StatusCode,
+				c.Request.Method,
+				c.Request.URL.Path,
+				string(bodyBytes),
+			)
+		} else {
+			log.Debugf("\n[PROXY] Success Response [%d] for %s %s\n",
+				resp.StatusCode,
+				c.Request.Method,
+				c.Request.URL.Path,
+			)
+		}
 		// Xóa tất cả các CORS header từ response của service được proxy
 		resp.Header.Del("Access-Control-Allow-Origin")
 		resp.Header.Del("Access-Control-Allow-Credentials")

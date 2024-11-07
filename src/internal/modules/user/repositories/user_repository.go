@@ -9,6 +9,7 @@ import (
 )
 
 type UserRepository interface {
+	GetOneByID(userID uint) (*user_models.User, error)
 	GetOne(filter *user_filters.UserFilter) (*user_models.User, error)
 	GetMany(filter *user_filters.UserFilter) ([]*user_models.User, error)
 	Create(user *user_dto.CreateUserDTO) error
@@ -28,9 +29,15 @@ type userRepository struct {
 	db *gorm.DB
 }
 
+func (r *userRepository) GetOneByID(userID uint) (*user_models.User, error) {
+	return r.GetOne(&user_filters.UserFilter{
+		ID: userID,
+	})
+}
+
 func (r *userRepository) GetOne(filter *user_filters.UserFilter) (*user_models.User, error) {
 	var user *user_models.User
-	err := r.db.Scopes(user_scopes.UserScopes(filter)).First(&user).Error
+	err := r.db.Debug().Scopes(user_scopes.UserScopes(filter)).First(&user).Error
 	if err != nil {
 		return nil, err
 	}

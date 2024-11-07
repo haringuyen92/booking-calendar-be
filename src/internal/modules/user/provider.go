@@ -16,14 +16,27 @@ func Provider() fx.Option {
 		fx.Provide(user_services.NewUserService),
 		fx.Provide(user_controllers.NewUserController),
 
+		fx.Provide(user_repositories.NewMessageRepository),
+		fx.Provide(user_repositories.NewConversationRepository),
+		fx.Provide(user_services.NewMessageService),
+		fx.Provide(user_controllers.NewMessageController),
+
+		fx.Provide(user_routers.NewUserRouter),
+		fx.Provide(user_routers.NewMessageRouter),
+
 		fx.Invoke(registerRoutes),
 	)
 }
 
 func registerRoutes(
 	r *gin.Engine,
-	controller *user_controllers.UserController,
+	rUser *user_routers.UserRouter,
+	rMessage *user_routers.MessageRouter,
 ) {
-	userGroup := r.Group("/api/users")
-	user_routers.Register(userGroup, controller)
+	group := r.Group("")
+	user_routers.RegisterRouters(
+		group,
+		rUser,
+		rMessage,
+	)
 }

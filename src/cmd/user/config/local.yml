@@ -1,2 +1,32 @@
 app:
   port: 8092
+  mongodb:
+    uri: mongodb://root:secret@mongo:27017/
+    database: dev
+  datasource:
+    # SQL driver. Supports: mysql, postgres, sqlite
+    driver: mysql
+
+    # When dsn is provided, it will override all above connection configs
+    dsn: root:password@tcp(mysql:3306)/db?parseTime=true
+    #    dsn: root:secret@tcp(localhost:3306)/db?parseTime=true
+
+    # The maximum number of open connections to the database.
+    # Default 10 connections
+    maxOpenConns: 10
+
+    # The maximum amount of time a connection may be reused.
+    # Default 30m
+    connMaxLifetime: 30m
+
+    # The maximum number of connections in the idle connection pool.
+    # Default 2
+    maxIdleConns: 2
+
+    # The maximum amount of time a connection may be idle.
+    # Default 10m
+    connMaxIdleTime: 10m
+  redis:
+    host: redis
+    port: 6379
+    database: 0

@@ -5,6 +5,7 @@ import (
 	course_models "booking-calendar-server-backend/internal/modules/course/models"
 	staff_models "booking-calendar-server-backend/internal/modules/staff/models"
 	"booking-calendar-server-backend/internal/modules/store/models"
+	user_models "booking-calendar-server-backend/internal/modules/user/models"
 	"fmt"
 	"io"
 	"os"
@@ -15,6 +16,7 @@ func main() {
 		&models.Store{},
 		&staff_models.Staff{},
 		&course_models.Course{},
+		&user_models.User{},
 	)
 
 	if err != nil {

@@ -32,9 +32,7 @@ func (co *UserController) GetOne(c *gin.Context, req *user_requests.GetUserReque
 }
 
 func (co *UserController) GetMany(c *gin.Context, req *user_requests.GetAllUserRequest) error {
-	res, err := co.userService.GetMany(&user_filters.UserFilter{
-		ID: req.ID,
-	})
+	res, err := co.userService.GetMany(&user_filters.UserFilter{})
 	if err != nil {
 		return interceptors.ResponseError(c, err)
 	}
