@@ -7,9 +7,9 @@ import (
 
 type Conversation struct {
 	ID           primitive.ObjectID        `bson:"_id,omitempty" json:"id,omitempty"`
-	Participants map[uint]ConversationUser `bson:"participants" json:"participants"`
-	CreatedAt    time.Time                 `bson:"created_at" json:"created_at"`
-	UpdatedAt    time.Time                 `bson:"updated_at" json:"updated_at"`
+	Participants map[uint]ConversationUser `bson:"participants,omitempty" json:"participants"`
+	CreatedAt    time.Time                 `bson:"created_at,omitempty" json:"created_at"`
+	UpdatedAt    time.Time                 `bson:"updated_at,omitempty" json:"updated_at"`
 	DeletedAt    *time.Time                `bson:"deleted_at,omitempty" json:"-"`
 	LastMessage  *ConversationLastMessage  `bson:"last_message,omitempty" json:"last_message,omitempty"`
 }

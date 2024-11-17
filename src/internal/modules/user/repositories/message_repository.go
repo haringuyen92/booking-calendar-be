@@ -6,10 +6,12 @@ import (
 	user_scopes "booking-calendar-server-backend/internal/modules/user/scopes"
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
+	"time"
 )
 
 type MessageRepository interface {
 	GetByConversationID(conversationID string) ([]*user_models.Message, error)
+	Create(message *user_models.Message) error
 	GetMany(filter *user_filters.MessageFilter) ([]*user_models.Message, error)
 }
 
@@ -30,6 +32,17 @@ func (r *messageRepository) GetByConversationID(conversationID string) ([]*user_
 	return r.GetMany(&user_filters.MessageFilter{
 		ConversationID: conversationID,
 	})
+}
+
+func (r *messageRepository) Create(message *user_models.Message) error {
+	now := time.Now()
+	message.CreatedAt = now
+	message.UpdatedAt = now
+	_, err := r.collection.InsertOne(context.Background(), message)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (r *messageRepository) GetMany(filter *user_filters.MessageFilter) ([]*user_models.Message, error) {

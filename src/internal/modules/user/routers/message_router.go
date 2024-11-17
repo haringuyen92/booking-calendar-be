@@ -21,6 +21,7 @@ func (s *MessageRouter) Register(group *gin.RouterGroup) {
 	group.GET("/conversations/", s.getConversations())
 	group.POST("/conversations/", s.createConversation())
 	group.GET("/messages", s.getMessages())
+	group.POST("/messages", s.createMessage())
 }
 
 func (s *MessageRouter) getConversations() gin.HandlerFunc {
@@ -36,9 +37,7 @@ func (s *MessageRouter) getConversations() gin.HandlerFunc {
 func (s *MessageRouter) getMessages() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req user_requests.GetAllMessageRequest
-		if err := c.ShouldBindQuery(&req); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		}
+		req.ConversationID = c.Query("conversation_id")
 		_ = s.h.GetMessages(c, &req)
 	}
 }
@@ -50,5 +49,15 @@ func (s *MessageRouter) createConversation() gin.HandlerFunc {
 		//	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		//}
 		_ = s.h.CreateConversation(c, &req)
+	}
+}
+
+func (s *MessageRouter) createMessage() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req user_requests.CreateMessageRequest
+		if err := c.ShouldBind(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+		_ = s.h.CreateMessage(c, &req)
 	}
 }

@@ -3,10 +3,12 @@ package boostrap
 import (
 	"booking-calendar-server-backend/internal/core/constant"
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/golibs-starter/golib/log"
+	"github.com/gorilla/websocket"
 	"io"
 	"net/http"
 	"net/http/httputil"
@@ -20,6 +22,8 @@ func ReverseProxy(gin *gin.Engine) {
 	//gin.Any("/api/courses/*proxyPath", reverseProxy)
 	gin.Any("/api/bookings/*proxyPath", reverseProxy)
 	gin.Any("/api/users/*proxyPath", reverseProxy)
+	gin.GET("/ws/:userID", HandleWebSocket)
+	gin.POST("/api/send-message", SendMessageAPI)
 }
 
 func reverseProxy(c *gin.Context) {
@@ -116,4 +120,38 @@ func forwardTo(fromURL string) (string, error) {
 	}
 	return "", errors.New("invalid service")
 
+}
+
+func SendMessageToUser(userID string, message []byte) error {
+	if client, ok := clients[userID]; ok {
+		return client.Conn.WriteMessage(websocket.TextMessage, message)
+	}
+	return errors.New("user not connected")
+}
+
+func SendMessageAPI(c *gin.Context) {
+	var message struct {
+		From    string `json:"from"`
+		To      string `json:"to"`
+		Content string `json:"content"`
+	}
+
+	if err := c.BindJSON(&message); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	payload, err := json.Marshal(message)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to marshal message"})
+		return
+	}
+
+	err = SendMessageToUser(message.To, payload)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found or not connected"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Message sent successfully"})
 }

@@ -5,6 +5,7 @@ import (
 	user_models "booking-calendar-server-backend/internal/modules/user/models"
 	user_scopes "booking-calendar-server-backend/internal/modules/user/scopes"
 	"context"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"time"
 )
@@ -12,6 +13,8 @@ import (
 type ConversationRepository interface {
 	GetByUserID(userID uint) ([]*user_models.Conversation, error)
 	Create(model *user_models.Conversation) error
+	UpdateLastMessage(ID string, lastMessage *user_models.ConversationLastMessage) error
+	Update(filter *user_filters.ConversationFilter, update *user_models.Conversation) error
 	GetMany(filter *user_filters.ConversationFilter) ([]*user_models.Conversation, error)
 }
 
@@ -40,6 +43,29 @@ func (r *conversationRepository) Create(model *user_models.Conversation) error {
 	model.UpdatedAt = now
 	model.DeletedAt = nil
 	_, err := r.collection.InsertOne(context.Background(), model)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *conversationRepository) UpdateLastMessage(ID string, lastMessage *user_models.ConversationLastMessage) error {
+	conversation := &user_models.Conversation{
+		LastMessage: lastMessage,
+	}
+	return r.Update(&user_filters.ConversationFilter{
+		ID: ID,
+	}, conversation)
+}
+
+func (r *conversationRepository) Update(filter *user_filters.ConversationFilter, update *user_models.Conversation) error {
+	scope := user_scopes.ConversationScope(filter)
+	update.UpdatedAt = time.Now()
+	_, err := r.collection.UpdateOne(
+		context.Background(),
+		scope,
+		bson.M{"$set": update},
+	)
 	if err != nil {
 		return err
 	}

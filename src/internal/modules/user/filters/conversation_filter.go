@@ -1,5 +1,6 @@
 package user_filters
 
 type ConversationFilter struct {
-	UserID uint `json:"user_id"`
+	ID     string `json:"id"`
+	UserID uint   `json:"user_id"`
 }

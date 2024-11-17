@@ -42,6 +42,18 @@ func (co *MessageController) CreateConversation(c *gin.Context, req *user_reques
 	return interceptors.ResponseSuccess(c, nil)
 }
 
+func (co *MessageController) CreateMessage(c *gin.Context, req *user_requests.CreateMessageRequest) error {
+	err := co.messageService.CreateMessage(&user_dto.CreateMessageDto{
+		SenderID:       1,
+		ConversationID: req.ConversationID,
+		Content:        req.Content,
+	})
+	if err != nil {
+		return interceptors.ResponseError(c, err)
+	}
+	return interceptors.ResponseSuccess(c, nil)
+}
+
 func (co *MessageController) GetMessages(c *gin.Context, req *user_requests.GetAllMessageRequest) error {
 	res, err := co.messageService.GetMessages(&user_filters.MessageFilter{
 		ConversationID: req.ConversationID,

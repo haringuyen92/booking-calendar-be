@@ -1,17 +1,21 @@
 package user_services
 
 import (
+	"booking-calendar-server-backend/internal/core/utils"
 	user_dto "booking-calendar-server-backend/internal/modules/user/dto"
 	user_filters "booking-calendar-server-backend/internal/modules/user/filters"
 	user_mappers "booking-calendar-server-backend/internal/modules/user/mappers"
 	user_models "booking-calendar-server-backend/internal/modules/user/models"
 	user_repositories "booking-calendar-server-backend/internal/modules/user/repositories"
 	user_responses "booking-calendar-server-backend/internal/modules/user/responses"
+	"github.com/golibs-starter/golib/log"
+	"time"
 )
 
 type MessageService interface {
 	GetConversations(filter *user_filters.ConversationFilter) ([]*user_responses.GetAllConversationsResponse, error)
 	CreateConversation(dto *user_dto.CreateConversationDto) error
+	CreateMessage(dto *user_dto.CreateMessageDto) error
 	GetMessages(filter *user_filters.MessageFilter) ([]*user_responses.GetAllMessageResponse, error)
 }
 
@@ -67,6 +71,32 @@ func (s *messageService) CreateConversation(dto *user_dto.CreateConversationDto)
 	return s.conversationRepository.Create(&user_models.Conversation{
 		Participants: participants,
 	})
+}
+
+func (s *messageService) CreateMessage(dto *user_dto.CreateMessageDto) error {
+	message := &user_models.Message{
+		SenderID:       dto.SenderID,
+		ConversationID: dto.ConversationID,
+		Content:        utils.ReflectString(dto.Content),
+	}
+	err := s.messageRepository.Create(message)
+	if err != nil {
+		return err
+	}
+	go func() {
+		err := s.conversationRepository.UpdateLastMessage(
+			dto.ConversationID,
+			&user_models.ConversationLastMessage{
+				SenderID: message.SenderID,
+				Content:  message.Content,
+				SendAt:   time.Now(),
+			},
+		)
+		if err != nil {
+			log.Errorf("Failed to update last message: %v", err)
+		}
+	}()
+	return nil
 }
 
 func (s *messageService) GetMessages(filter *user_filters.MessageFilter) ([]*user_responses.GetAllMessageResponse, error) {
